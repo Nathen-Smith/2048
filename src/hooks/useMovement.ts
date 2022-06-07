@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useSwipeable } from 'react-swipeable';
 
-interface DirCallbackProps {
+interface MoveCallbackProps {
   onMoveUp?: () => any;
   onMoveDown?: () => any;
   onMoveLeft?: () => any;
   onMoveRight?: () => any;
 }
 
-type DirectionProps = 'up' | 'down' | 'left' | 'right' | '';
+type MovementDir = 'up' | 'down' | 'left' | 'right' | '';
 
-function useDirection({
+function useMovement({
   onMoveUp,
   onMoveDown,
   onMoveLeft,
   onMoveRight,
-}: DirCallbackProps) {
-  const [direction, setDirection] = useState<DirectionProps>('');
+}: MoveCallbackProps) {
+  const [direction, setDirection] = useState<MovementDir>('');
   const [shouldUpdate, setShouldUpdate] = useState(false);
 
   useEffect(() => {
@@ -48,18 +48,22 @@ function useDirection({
   onkeydown = ({ key }) => {
     switch (key) {
       case 'ArrowUp':
+      case 'w':
         setDirection('up');
         setShouldUpdate(!shouldUpdate)
         break;
       case 'ArrowDown':
+      case 's':
         setDirection('down');
         setShouldUpdate(!shouldUpdate)
         break;
       case 'ArrowLeft':
+      case 'a':
         setDirection('left');
         setShouldUpdate(!shouldUpdate)
         break;
       case 'ArrowRight':
+      case 'd':
         setDirection('right');
         setShouldUpdate(!shouldUpdate)
         break;
@@ -71,4 +75,4 @@ function useDirection({
   return swipeRef;
 }
 
-export default useDirection;
+export default useMovement;

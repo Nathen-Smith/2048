@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useDirection from './hooks/useDirection';
+import useDirection from './hooks/useMovement';
 
 function App() {
   const [s, setS] = useState('HELLO');
