@@ -12,7 +12,6 @@
         "ecmaFeatures": {
             "jsx": true
         },
-        "ecmaVersion": "latest",
         "sourceType": "module"
     },
     "plugins": [
@@ -24,7 +23,7 @@
     "rules": {
         "no-use-before-define": "off",
         "@typescript-eslint/no-use-before-define": ["error"],
-        "react/jsx-filename-extension": [ "warn", {"extensions": [".tsx"]} ],
+        "react/jsx-filename-extension": [ "warn", {"extensions": [".tsx", ".ts"]} ],
         "import/extensions": [
             "error",
             "ignorePackages",
@@ -36,15 +35,14 @@
         "max-len": ["warn", { "code": 80 }],
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn",
-        "import/no-unresolved": "error"
+        "import/no-unresolved": 0
     },
     "settings": {
         "import/parsers": {
             "@typescript-eslint/parser": [".ts", ".tsx"]
         },
         "import/resolver": {
-            "typescript": {
-            },
-        },
+            "typescript": {}
+        }
     }
 }

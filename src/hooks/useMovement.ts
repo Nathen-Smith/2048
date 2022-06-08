@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { useState, useEffect } from 'react';
 import { useSwipeable } from 'react-swipeable';
 
@@ -36,13 +37,13 @@ function useMovement({
       default:
         break;
     }
-  }, [direction, shouldUpdate]);
+  }, [shouldUpdate, direction, onMoveUp, onMoveDown, onMoveLeft, onMoveRight]);
 
   const swipeRef = useSwipeable({
-    onSwipedUp: () => {setDirection('up'); setShouldUpdate(!shouldUpdate)},
-    onSwipedDown: () => {setDirection('down'); setShouldUpdate(!shouldUpdate)},
-    onSwipedLeft: () => {setDirection('left'); setShouldUpdate(!shouldUpdate)},
-    onSwipedRight: () => {setDirection('right'); setShouldUpdate(!shouldUpdate)},
+    onSwipedUp: () => { setDirection('up'); setShouldUpdate(!shouldUpdate); },
+    onSwipedDown: () => { setDirection('down'); setShouldUpdate(!shouldUpdate); },
+    onSwipedLeft: () => { setDirection('left'); setShouldUpdate(!shouldUpdate); },
+    onSwipedRight: () => { setDirection('right'); setShouldUpdate(!shouldUpdate); },
   });
 
   onkeydown = ({ key }) => {
@@ -50,22 +51,22 @@ function useMovement({
       case 'ArrowUp':
       case 'w':
         setDirection('up');
-        setShouldUpdate(!shouldUpdate)
+        setShouldUpdate(!shouldUpdate);
         break;
       case 'ArrowDown':
       case 's':
         setDirection('down');
-        setShouldUpdate(!shouldUpdate)
+        setShouldUpdate(!shouldUpdate);
         break;
       case 'ArrowLeft':
       case 'a':
         setDirection('left');
-        setShouldUpdate(!shouldUpdate)
+        setShouldUpdate(!shouldUpdate);
         break;
       case 'ArrowRight':
       case 'd':
         setDirection('right');
-        setShouldUpdate(!shouldUpdate)
+        setShouldUpdate(!shouldUpdate);
         break;
       default:
         break;
