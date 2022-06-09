@@ -40,10 +40,22 @@ function useMovement({
   }, [shouldUpdate, direction, onMoveUp, onMoveDown, onMoveLeft, onMoveRight]);
 
   const swipeRef = useSwipeable({
-    onSwipedUp: () => { setDirection('up'); setShouldUpdate(!shouldUpdate); },
-    onSwipedDown: () => { setDirection('down'); setShouldUpdate(!shouldUpdate); },
-    onSwipedLeft: () => { setDirection('left'); setShouldUpdate(!shouldUpdate); },
-    onSwipedRight: () => { setDirection('right'); setShouldUpdate(!shouldUpdate); },
+    onSwipedUp: () => {
+      setDirection('up');
+      setShouldUpdate(!shouldUpdate);
+    },
+    onSwipedDown: () => {
+      setDirection('down');
+      setShouldUpdate(!shouldUpdate);
+    },
+    onSwipedLeft: () => {
+      setDirection('left');
+      setShouldUpdate(!shouldUpdate);
+    },
+    onSwipedRight: () => {
+      setDirection('right');
+      setShouldUpdate(!shouldUpdate);
+    },
   });
 
   onkeydown = ({ key }) => {
