@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+.grid-row {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.grid-cell {
+  width: 106.25px;
+  height: 106.25px;
+  border-radius: 3px;
+  margin-right: 15px;
+}
+
+.tile-inner {
+  color: white;
+  border-radius: 3px;
+  text-align: center;
+  font-weight: bold;
+  z-index: 10;
+  font-size: 55px;
+}
+
 .tile-position-0-0 {
   transform: translate(0px,0px);
 }
@@ -16,7 +37,7 @@
 }
 
 .tile-position-1-0 {
-  transform: translate(0px,0px);
+  transform: translate(0px,121px);
 }
 .tile-position-1-1 {
   transform: translate(121px,121px);
@@ -28,28 +49,28 @@
   transform: translate(363px,121px);
 }
 
-.tile-position-0-0 {
+.tile-position-2-0 {
   transform: translate(0px,242px);
 }
-.tile-position-0-1 {
+.tile-position-2-1 {
   transform: translate(121px,242px);
 }
-.tile-position-0-2 {
+.tile-position-2-2 {
   transform: translate(242px,242px);
 }
-.tile-position-0-3 {
+.tile-position-2-3 {
   transform: translate(363px,242px);
 }
 
-.tile-position-0-0 {
+.tile-position-3-0 {
   transform: translate(0px,363px);
 }
-.tile-position-0-1 {
+.tile-position-3-1 {
   transform: translate(121px,363px);
 }
-.tile-position-0-2 {
+.tile-position-3-2 {
   transform: translate(242px,363px);
 }
-.tile-position-0-3 {
+.tile-position-3-3 {
   transform: translate(363px,363px);
 }

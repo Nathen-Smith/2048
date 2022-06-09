@@ -55,7 +55,6 @@ export function slideUp({
         newGrid[nextSpot - 1][j].value *= 2;
         newGrid[i][j].value = 0;
         newGrid[i][j].transition = getTransition(0, nextSpot - i);
-        console.log(newGrid[i][j].transition);
 
         // assign transition
         // also need to delete the one being combined.
@@ -69,7 +68,6 @@ export function slideUp({
         newGrid[nextSpot][j].value = newGrid[i][j].value;
         newGrid[i][j].value = 0;
         newGrid[i][j].transition = getTransition(0, nextSpot - i);
-        console.log(newGrid[i][j].transition);
         nextSpot++;
         !valid && (valid = true);
       } else {

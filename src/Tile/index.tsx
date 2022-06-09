@@ -19,7 +19,6 @@ export function Tile() {
   }, []);
 
   const [transition, setTransition] = useState('translate-x-0');
-  console.log(transition);
 
   return (
     <div>
