@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 export const DEFAULT_MOVE_TRANSITION = 'translate-x-0';
-// const SQUARE_SIZE = 32;
-// const GRID_GAP = 4;
 
 export function getTransition(x: number, y: number): string {
   return `tile-position-${x}-${y}`;

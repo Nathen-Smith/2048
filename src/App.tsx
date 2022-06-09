@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useCallback, useEffect } from 'react';
 import useDirection from './hooks/useMovement';
+import useForceUpdate from './hooks/useForceUpdate';
 import { slideDown, slideUp } from './utils/slideFunctions';
 import { DEFAULT_MOVE_TRANSITION, TileProps, Tile } from './Tile';
 import initialGrid from './Grid';
@@ -10,16 +11,6 @@ function App() {
   const [score, setScore] = useState(0);
   const [error, setError] = useState('');
   const [open, setOpen] = useState(true);
-
-  // we have a matrix of the objects,
-  // but what happens when we change the data in the matrix?
-  // do we need react component for each square? probably
-  // is a matrix even needed?
-
-  // key problem is how to dispatch the transition updates asynchronously.
-  // we can have an array(or map) of objects. for handling transitions
-  // try testing this map state
-  // update coordinates after doing transition?
 
   function flatIdx(i:number, j:number) {
     return i * 4 + j;
@@ -31,10 +22,6 @@ function App() {
     setTilesMap(tilesMap.set(k, v));
   };
   const [update, setUpdate] = useState(false);
-
-  useEffect(() => {
-    console.log('here');
-  }, [tilesMap]);
 
   const tiles: TileProps[] = [];
   tilesMap.forEach((tile, _) => {
@@ -48,8 +35,9 @@ function App() {
   function getTransition(x: number, y: number): string {
     return `tile-position-${x}-${y}`;
   }
+
+  const forceUpdate = useForceUpdate();
   function slideUpMap() {
-    console.log('up');
     // const newTilesMap = tilesMap;
     const validMove = false;
     for (let j = 0; j < 4; j += 1) {
@@ -91,8 +79,7 @@ function App() {
       }
     }
     setTilesMap(tilesMap);
-    // setUpdate(!update);
-    // updateAllMap(newTilesMap);
+    forceUpdate();
   }
 
   const swipeRef = useDirection({
