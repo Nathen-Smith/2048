@@ -3,7 +3,7 @@ import useDirection from './hooks/useMovement';
 import useForceUpdate from './hooks/useForceUpdate';
 import { TileProps } from './Tile';
 
-function App() {
+function Game() {
   function flatIdx(i:number, j:number) {
     return i * 4 + j;
   }
@@ -21,19 +21,35 @@ function App() {
   // on a new key press we delete from our flattened index in the tilesMap
   // we can guarantee there will be one remaining.
 
-  const [tilesMap, setTilesMap] = useState(new Map<number, TileProps>([[4,
-    {
-      value: 4,
-      key: 0,
-      zIndex: 10,
-      transition: 'tile-position-2-0',
-      animation: 'tile-new',
-    },
+  // array representation is probably faster at this point.
+  // we can add a property to mark for deletion
+  // the movement logic would just loop again
+
+  const [tilesMap, setTilesMap] = useState(new Map<number, TileProps[]>([[4,
+    [
+      {
+        value: 4,
+        key: 0,
+        zIndex: 10,
+        transition: 'tile-position-2-0',
+        animation: 'tile-new',
+      },
+    ],
   ]]));
 
+  const tilesToRemove = new Map<number, number>();
+  function cleanBoard() {
+    tilesToRemove.forEach((index, value)=> {
+      const 
+    })
+  }
+
   const tiles: TileProps[] = [];
-  tilesMap.forEach((tile) => {
-    tiles.push(tile);
+  tilesMap.forEach((tileArr) => {
+    tileArr.forEach((tile) => {
+      tiles.push(tile);
+      }
+    )
   });
 
   function getTransition(x: number, y: number): string {
@@ -145,4 +161,4 @@ function App() {
   );
 }
 
-export default App;
+export default Game;

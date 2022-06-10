@@ -45,33 +45,36 @@ export function Tile() {
 
 export interface TileProps {
   value: number;
-  transition?: string;
+  key: number;
+  zIndex: number;
+  transition: string;
+  animation: string;
 }
 
-export function makeTile({
-  value, transition,
-}:TileProps): TileProps {
-  return {
-    value: value || 0,
-    transition: transition || DEFAULT_MOVE_TRANSITION,
-  };
-}
+// export function makeTile({
+//   value, transition,
+// }:TileProps): TileProps {
+//   return {
+//     value: value || 0,
+//     transition: transition || DEFAULT_MOVE_TRANSITION,
+//   };
+// }
 
-export function spawnTile(grid: TileProps[][]) {
-  const openSquares = [];
-  for (let i = 0; i < 4; i += 1) {
-    for (let j = 0; j < 4; j += 1) {
-      if (grid && grid[i][j].value === 0) {
-        openSquares.push(i * 4 + j);
-      }
-    }
-  }
-  const newSquareIdx = openSquares[Math.floor(openSquares.length
-    * Math.random())];
-  const newGrid = grid;
-  const i = Math.floor(newSquareIdx / 4);
-  const j = newSquareIdx % 4;
-  newGrid[i][j] = Math.floor(Math.random() * 2) === 0
-    ? makeTile({ value: 2 }) : makeTile({ value: 4 });
-  // setSquares([...newSquares]);
-}
+// export function spawnTile(grid: TileProps[][]) {
+//   const openSquares = [];
+//   for (let i = 0; i < 4; i += 1) {
+//     for (let j = 0; j < 4; j += 1) {
+//       if (grid && grid[i][j].value === 0) {
+//         openSquares.push(i * 4 + j);
+//       }
+//     }
+//   }
+//   const newSquareIdx = openSquares[Math.floor(openSquares.length
+//     * Math.random())];
+//   const newGrid = grid;
+//   const i = Math.floor(newSquareIdx / 4);
+//   const j = newSquareIdx % 4;
+// newGrid[i][j] = Math.floor(Math.random() * 2) === 0
+//   ? makeTile({ value: 2 }) : makeTile({ value: 4 });
+// setSquares([...newSquares]);
+// }
