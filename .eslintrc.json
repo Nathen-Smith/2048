@@ -5,7 +5,6 @@
     },
     "extends": [
         "plugin:react/recommended",
-        "plugin:tailwind/recommended",
         "airbnb"
     ],
     "parser": "@typescript-eslint/parser",

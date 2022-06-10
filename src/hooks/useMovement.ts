@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-expressions */
-import { useState, useEffect } from 'react';
 import { useSwipeable } from 'react-swipeable';
 
 interface MoveCallbackProps {
@@ -9,52 +8,24 @@ interface MoveCallbackProps {
   onMoveRight?: () => any;
 }
 
-type MovementDir = 'up' | 'down' | 'left' | 'right' | '';
-
 function useMovement({
   onMoveUp,
   onMoveDown,
   onMoveLeft,
   onMoveRight,
 }: MoveCallbackProps) {
-  const [direction, setDirection] = useState<MovementDir>('');
-  const [shouldUpdate, setShouldUpdate] = useState(false);
-
-  useEffect(() => {
-    switch (direction) {
-      case 'up':
-        onMoveUp && onMoveUp();
-        break;
-      case 'down':
-        onMoveDown && onMoveDown();
-        break;
-      case 'left':
-        onMoveLeft && onMoveLeft();
-        break;
-      case 'right':
-        onMoveRight && onMoveRight();
-        break;
-      default:
-        break;
-    }
-  }, [shouldUpdate, direction, onMoveUp, onMoveDown, onMoveLeft, onMoveRight]);
-
   const swipeRef = useSwipeable({
     onSwipedUp: () => {
-      setDirection('up');
-      setShouldUpdate(!shouldUpdate);
+      onMoveUp && onMoveUp();
     },
     onSwipedDown: () => {
-      setDirection('down');
-      setShouldUpdate(!shouldUpdate);
+      onMoveDown && onMoveDown();
     },
     onSwipedLeft: () => {
-      setDirection('left');
-      setShouldUpdate(!shouldUpdate);
+      onMoveLeft && onMoveLeft();
     },
     onSwipedRight: () => {
-      setDirection('right');
-      setShouldUpdate(!shouldUpdate);
+      onMoveRight && onMoveRight();
     },
   });
 
@@ -62,23 +33,19 @@ function useMovement({
     switch (key) {
       case 'ArrowUp':
       case 'w':
-        setDirection('up');
-        setShouldUpdate(!shouldUpdate);
+        onMoveUp && onMoveUp();
         break;
       case 'ArrowDown':
       case 's':
-        setDirection('down');
-        setShouldUpdate(!shouldUpdate);
+        onMoveDown && onMoveDown();
         break;
       case 'ArrowLeft':
       case 'a':
-        setDirection('left');
-        setShouldUpdate(!shouldUpdate);
+        onMoveLeft && onMoveLeft();
         break;
       case 'ArrowRight':
       case 'd':
-        setDirection('right');
-        setShouldUpdate(!shouldUpdate);
+        onMoveRight && onMoveRight();
         break;
       default:
         break;

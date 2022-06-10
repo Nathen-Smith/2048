@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import useDirection from './hooks/useMovement';
-import useForceUpdate from './hooks/useForceUpdate';
 import { TileProps } from './Tile';
 
 function App() {
@@ -8,94 +7,86 @@ function App() {
     return i * 4 + j;
   }
 
-  // lets say we have a map of number to array of tileProps
-  // the purpose of the array is really for merging and those transitions
-  // lets say we have two 2's merging into a 4
-  // the 2s move
-  // the 4 appears with merge animation
-  // all three are on the same square
-  // all 3 are still rendered
-  // but we need to clean this up next handler.
-  // we have a queue of keys to search for and delete
-  // alternatively can have a map of flattened index to the highest number of the 3 on the square
-  // on a new key press we delete from our flattened index in the tilesMap
-  // we can guarantee there will be one remaining.
+  // eslint-disable-next-line no-unused-vars
+  const [tilesArr, setTilesArr] = useState<TileProps[]>(
+    [
+      {
+        idx: 4,
+        key: 0,
+        value: 4,
+        delete: false,
+        zIndex: 10,
+        transition: 'tile-position-1-0',
+        animation: 'tile-new',
+      },
+    ],
+  );
 
-  const [tilesMap, setTilesMap] = useState(new Map<number, TileProps>([[4,
-    {
-      value: 4,
-      key: 0,
-      zIndex: 10,
-      transition: 'tile-position-2-0',
-      animation: 'tile-new',
-    },
-  ]]));
-
-  const tiles: TileProps[] = [];
-  tilesMap.forEach((tile) => {
-    tiles.push(tile);
-  });
+  function removedTiles() {
+    return tilesArr.filter((tile) => !tile.delete);
+  }
 
   function getTransition(x: number, y: number): string {
     return `tile-position-${x}-${y}`;
   }
 
-  const forceUpdate = useForceUpdate();
+  const slideUpMap = () => {
+    const newTilesArr = removedTiles();
+    // create a mapping of flat index to position in tilesArr
+    const idxMap = new Map<number, number>();
+    newTilesArr.forEach(({ idx }, arrIdx) => {
+      idxMap.set(idx, arrIdx);
+    });
 
-  function slideUpMap() {
-    // const newTilesMap = tilesMap;
-    // const validMove = false;
     for (let j = 0; j < 4; j += 1) {
       let nextSpotIdx = 0;
       for (let i = 0; i < 4; i += 1) {
-        const currTile = tilesMap.get(flatIdx(i, j));
-        if (!currTile) {
+        const currTileArrIdx = idxMap.get(flatIdx(i, j));
+        let currTile = currTileArrIdx && newTilesArr[currTileArrIdx];
+        if (!currTile || !currTileArrIdx) {
           // eslint-disable-next-line no-continue
           continue;
         }
-        const nextSpot = tilesMap.get(flatIdx(nextSpotIdx - 1, j));
+        const mergeTileIdx = idxMap.get(flatIdx(nextSpotIdx - 1, j));
+        const mergeTile = mergeTileIdx && newTilesArr[mergeTileIdx];
 
-        if (nextSpot && nextSpot.value === currTile.value) {
-          // combine
-          // newGrid[nextSpot - 1][j].value *= 2;
-          // newGrid[i][j].value = 0;
-          // newGrid[i][j].transition = getTransition(0, nextSpot - i);
-
-          // assign transition
-          // also need to delete the one being combined.
-          // now is probably the limit for x y mapping
-          // try a hashmap of matrix coordinates to these objects?
-
-          // setScore(score + newSquares[nextSpot - 1][j]);
-          // !valid && (valid = true);
-          // the one being merged into gets the animation...
-          // merge edge case
-
+        if (mergeTile && mergeTile.value === currTile.value) {
           // when we merge, all three squares are there.
           // the new one + the two that made this up.
           // then on next arrow press we remove the ones in the background
           // we can have a queue of elements to remove.
           // now our map is coordinates to an array of tiles.
+
+          // 1. move the current tile to the merging position
+          // 2. spawn new tile
+
+          // NEED
+          // method for key incrementing
+          //
+          currTile = {
+            ...currTile,
+            delete: true,
+            idx: flatIdx(nextSpotIdx - 1, j),
+            transition: getTransition(nextSpotIdx - 1, j),
+          };
         } else if (i !== nextSpotIdx) {
           // move to next valid spot
-          tilesMap.delete(flatIdx(i, j));
-          tilesMap.set(
-            flatIdx(nextSpotIdx, j),
-            {
-              ...currTile,
-              zIndex: 10,
-              transition: getTransition(nextSpotIdx, j),
-              animation: '',
-            },
-          );
+          idxMap.set(flatIdx(nextSpotIdx, j), currTileArrIdx);
+          currTile = {
+            ...currTile,
+            idx: flatIdx(nextSpotIdx, j),
+            transition: getTransition(nextSpotIdx, j),
+          };
+          newTilesArr[currTileArrIdx] = currTile;
+          idxMap.delete(flatIdx(i, j));
         } else {
           nextSpotIdx += 1;
         }
       }
     }
-    setTilesMap(tilesMap);
-    forceUpdate();
-  }
+    // console.log(newTilesArr);
+    setTilesArr(newTilesArr);
+  };
 
   const swipeRef = useDirection({
     onMoveDown: () => console.log('down'),
@@ -110,9 +101,9 @@ function App() {
         className="absolute left-1/2 transform -translate-x-1/2 w-[470px] h-[470px] z-2"
       >
         {
-          tiles.map(({
-            value,
+          tilesArr.map(({
             key,
+            value,
             zIndex,
             transition,
             animation,

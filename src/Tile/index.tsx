@@ -44,8 +44,10 @@ export function Tile() {
 }
 
 export interface TileProps {
-  value: number;
+  idx: number;
   key: number;
+  value: number;
+  delete: boolean;
   zIndex: number;
   transition: string;
   animation: string;
