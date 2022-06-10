@@ -30,7 +30,6 @@
   animation-fill-mode: backwards;
 }
 
-
 .tile-merged {
   animation: pop 200ms ease 100ms;
   animation-fill-mode: backwards;
