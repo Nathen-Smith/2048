@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import useDirection from './hooks/useMovement';
+import useNewKey from './hooks/useNewKey';
 
 // TODO:
-// key incrementing!!
-// spawning random tiles
 // file reformat
 // z index work
 
@@ -48,38 +47,47 @@ function App() {
     NONE: '',
   };
 
-interface TileMeta {
-  idx: number;
-  key: number;
-  value: number;
-  delete: boolean;
-  zIndex: number;
-  transition: string;
-  animation: string;
-}
-function flatIdx(i:number, j:number) {
-  return i * 4 + j;
-}
-function getTransition(i: number, j: number): string {
-  return `tile-position-${i}-${j}`;
-}
-  interface NewTile {
+  interface TileMeta {
+    idx: number;
+    key: number;
+    value: number;
+    delete: boolean;
+    zIndex: number;
+    transition: string;
+    animation: string;
+  }
+  function flatIdx(i:number, j:number) {
+    return i * 4 + j;
+  }
+  function matrixIndices(flatIndex: number) {
+    return { i: Math.floor(flatIndex / 4), j: (flatIndex % 4) };
+  }
+  function getTransition(i: number, j: number): string {
+    return `tile-position-${i}-${j}`;
+  }
+
+  const keyGen = useNewKey();
+
+  interface NewTileProps {
     i: number;
     j: number;
     value: number;
-    state: TileState;
+    state?: TileState;
+    key?: number;
   }
-  function spawnTile({
-    i, j, value, state,
-  }: NewTile): TileMeta {
+  function Tile({
+    i, j, value, state, key,
+  }: NewTileProps): TileMeta {
+    const animationKey = state || 'NONE';
+    const newKey = key || (Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
     return {
       value,
       idx: flatIdx(i, j),
-      key: 3,
+      key: newKey || keyGen(),
       delete: false,
-      zIndex: state === 'MERGE' ? 20 : 10,
+      zIndex: animationKey === 'MERGE' ? 20 : 10,
       transition: getTransition(i, j),
-      animation: animationMap[state],
+      animation: animationMap[animationKey],
     };
   }
 
@@ -88,7 +96,7 @@ function getTransition(i: number, j: number): string {
     [
       {
         idx: 8,
-        key: 0,
+        key: 87,
         value: 4,
         delete: false,
         zIndex: 10,
@@ -97,7 +105,7 @@ function getTransition(i: number, j: number): string {
       },
       {
         idx: 0,
-        key: 1,
+        key: -98,
         value: 4,
         delete: false,
         zIndex: 10,
@@ -106,6 +114,24 @@ function getTransition(i: number, j: number): string {
       },
     ],
   );
+
+  // eslint-disable-next-line no-unused-vars
+  function spawnRandTile(newTilesArr : TileMeta[]) {
+    const tileIndices = new Set(newTilesArr.map((tile) => tile.idx));
+    const openIndices: number[] = [];
+    for (let i = 0; i < 16; i += 1) {
+      if (!tileIndices.has(i)) {
+        openIndices.push(i);
+      }
+    }
+    const newTileIdx = openIndices[Math.floor(openIndices.length
+       * Math.random())];
+    const { i, j } = matrixIndices(newTileIdx);
+    const newTile = Tile({
+      i, j, value: 2, state: 'NEW',
+    });
+    newTilesArr.push(newTile);
+  }
 
   function removedTiles() {
     return tilesArr
@@ -116,8 +142,9 @@ function getTransition(i: number, j: number): string {
       });
   }
 
-  type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
+  type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
   function slideHandler(dir : Direction) {
+    let validMove = false;
     const newTilesArr = removedTiles();
     // mapping of flat index to position in tilesArr
     const flatToArrPosMap = new Map<number, number>();
@@ -131,11 +158,10 @@ function getTransition(i: number, j: number): string {
       currTileArrIdx: number;
       nextSpotIdx: number;
     }
+
     function moveTile({
       i, j, currTileArrIdx, nextSpotIdx,
     }: MoveTileProps):number {
-      // might need valid flag for moveLogic
-
       const currFlatIdx = newTilesArr[currTileArrIdx].idx;
       const reverseIteration = !!(dir === 'DOWN' || dir === 'RIGHT');
       const horizontalMove = !!(dir === 'LEFT' || dir === 'RIGHT');
@@ -168,6 +194,7 @@ function getTransition(i: number, j: number): string {
       if (mergeTileIdx !== undefined && mergeTile
         && mergeTile.value === currTile.value) {
         // merge
+        validMove = true;
         mergeTile = {
           ...mergeTile,
           delete: true,
@@ -179,9 +206,9 @@ function getTransition(i: number, j: number): string {
           idx: mergeFlatIdx(),
           transition: mergeTransition(),
         };
-        const newTile = spawnTile({
-          i: Math.floor(mergeFlatIdx() / 4),
-          j: mergeFlatIdx() % 4,
+        const newTile = Tile({
+          i: matrixIndices(mergeFlatIdx()).i,
+          j: matrixIndices(mergeFlatIdx()).j,
           value: mergeTile.value * 2,
           state: 'MERGE',
         });
@@ -193,6 +220,7 @@ function getTransition(i: number, j: number): string {
       } if ((horizontalMove && (j !== nextSpotIdx))
       || (!horizontalMove && (i !== nextSpotIdx))) {
         // move to next valid spot
+        validMove = true;
         flatToArrPosMap.set(moveFlatIdx(), currTileArrIdx);
         currTile = {
           ...currTile,
@@ -255,7 +283,10 @@ function getTransition(i: number, j: number): string {
         }
       }
     }
-
+    if (!validMove) {
+      return;
+    }
+    spawnRandTile(newTilesArr);
     setTilesArr(newTilesArr);
   }
 
