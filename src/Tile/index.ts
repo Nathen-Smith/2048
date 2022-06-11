@@ -107,19 +107,6 @@ export function removeMarkedTiles(tilesArr: TileMeta[]) {
     });
 }
 
-export const initialTilesRandom: TileMeta[] = [
-  Tile({
-    i: 0, j: 0, value: 2, state: 'NEW', key: 1,
-  }),
-  Tile({
-    i: 0, j: 1, value: 2, state: 'NEW', key: 4,
-  }),
-  Tile({
-    i: 0, j: 2, value: 2, state: 'NEW', key: 2,
-  }),
-  Tile({
-    i: 0, j: 3, value: 2, state: 'NEW', key: 3,
-  }),
-];
-// spawnTileRandom(initialTilesRandom);
-// spawnTileRandom(initialTilesRandom);
+export const initialTilesRandom: TileMeta[] = [];
+spawnTileRandom(initialTilesRandom);
+spawnTileRandom(initialTilesRandom);

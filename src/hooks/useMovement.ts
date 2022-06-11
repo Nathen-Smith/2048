@@ -15,6 +15,7 @@ function useMovement({
   onMoveRight,
 }: MoveCallbackProps) {
   const swipeRef = useSwipeable({
+    preventScrollOnSwipe: true,
     onSwipedUp: () => {
       onMoveUp && onMoveUp();
     },
