@@ -1,151 +1,24 @@
 import React, { useState } from 'react';
 import useDirection from './hooks/useMovement';
-import useNewKey from './hooks/useNewKey';
-
-// TODO:
-// file reformat
-// z index work
+import {
+  TileMeta,
+  Tile,
+  spawnTileRandom,
+  initialTilesRandom,
+  flatIdx,
+  getTransition,
+  matrixIndices,
+  colorMapper,
+  removeMarkedTiles,
+} from './Tile';
 
 function App() {
-  function colorMapper(value: number) {
-    switch (value) {
-      case 0:
-        return 'bg-stone-200';
-      case 2:
-        return 'bg-stone-100 text-stone-500';
-      case 4:
-        return 'bg-orange-100 text-stone-600';
-      case 8:
-        return 'bg-orange-300';
-      case 16:
-        return 'bg-orange-400';
-      case 32:
-        return 'bg-red-400';
-      case 64:
-        return 'bg-red-500';
-      case 128:
-        return 'bg-yellow-200';
-      case 256:
-        return 'bg-yellow-300';
-      case 512:
-        return 'bg-yellow-200 text-5xl';
-      case 1024:
-        return 'bg-yellow-300 text-4xl';
-      case 2048:
-        return 'bg-yellow-400 text-4xl';
-      case 4096:
-        return 'bg-teal-500';
-      default:
-        break;
-    }
-    return '';
-  }
-  type TileState = 'NEW' | 'MERGE' | 'NONE'
-  const animationMap = {
-    NEW: 'tile-new',
-    MERGE: 'tile-merged',
-    NONE: '',
-  };
-
-  interface TileMeta {
-    idx: number;
-    key: number;
-    value: number;
-    delete: boolean;
-    zIndex: number;
-    transition: string;
-    animation: string;
-  }
-  function flatIdx(i:number, j:number) {
-    return i * 4 + j;
-  }
-  function matrixIndices(flatIndex: number) {
-    return { i: Math.floor(flatIndex / 4), j: (flatIndex % 4) };
-  }
-  function getTransition(i: number, j: number): string {
-    return `tile-position-${i}-${j}`;
-  }
-
-  const keyGen = useNewKey();
-
-  interface NewTileProps {
-    i: number;
-    j: number;
-    value: number;
-    state?: TileState;
-    key?: number;
-  }
-  function Tile({
-    i, j, value, state, key,
-  }: NewTileProps): TileMeta {
-    const animationKey = state || 'NONE';
-    const newKey = key || (Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
-    return {
-      value,
-      idx: flatIdx(i, j),
-      key: newKey || keyGen(),
-      delete: false,
-      zIndex: animationKey === 'MERGE' ? 20 : 10,
-      transition: getTransition(i, j),
-      animation: animationMap[animationKey],
-    };
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  const [tilesArr, setTilesArr] = useState<TileMeta[]>(
-    [
-      {
-        idx: 8,
-        key: 87,
-        value: 4,
-        delete: false,
-        zIndex: 10,
-        transition: 'tile-position-2-0',
-        animation: 'tile-new',
-      },
-      {
-        idx: 0,
-        key: -98,
-        value: 4,
-        delete: false,
-        zIndex: 10,
-        transition: 'tile-position-0-0',
-        animation: 'tile-new',
-      },
-    ],
-  );
-
-  // eslint-disable-next-line no-unused-vars
-  function spawnRandTile(newTilesArr : TileMeta[]) {
-    const tileIndices = new Set(newTilesArr.map((tile) => tile.idx));
-    const openIndices: number[] = [];
-    for (let i = 0; i < 16; i += 1) {
-      if (!tileIndices.has(i)) {
-        openIndices.push(i);
-      }
-    }
-    const newTileIdx = openIndices[Math.floor(openIndices.length
-       * Math.random())];
-    const { i, j } = matrixIndices(newTileIdx);
-    const newTile = Tile({
-      i, j, value: 2, state: 'NEW',
-    });
-    newTilesArr.push(newTile);
-  }
-
-  function removedTiles() {
-    return tilesArr
-      .filter((tile) => !tile.delete)
-      .map((tile) => {
-        const newTile = { ...tile, zIndex: 10 };
-        return newTile;
-      });
-  }
+  const [tilesArr, setTilesArr] = useState<TileMeta[]>(initialTilesRandom);
 
   type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
   function slideHandler(dir : Direction) {
     let validMove = false;
-    const newTilesArr = removedTiles();
+    const newTilesArr = removeMarkedTiles(tilesArr);
     // mapping of flat index to position in tilesArr
     const flatToArrPosMap = new Map<number, number>();
     newTilesArr.forEach(({ idx }, arrIdx) => {
@@ -198,7 +71,7 @@ function App() {
         mergeTile = {
           ...mergeTile,
           delete: true,
-          zIndex: 0,
+          zIndex: 10,
         };
         currTile = {
           ...currTile,
@@ -216,6 +89,8 @@ function App() {
         newTilesArr[currTileArrIdx] = currTile;
         newTilesArr.push(newTile);
         flatToArrPosMap.set(currFlatIdx, newTilesArr.length - 1);
+        flatToArrPosMap.delete(currFlatIdx);
+        flatToArrPosMap.delete(mergeFlatIdx());
         return nextSpotIdx;
       } if ((horizontalMove && (j !== nextSpotIdx))
       || (!horizontalMove && (i !== nextSpotIdx))) {
@@ -286,7 +161,7 @@ function App() {
     if (!validMove) {
       return;
     }
-    spawnRandTile(newTilesArr);
+    spawnTileRandom(newTilesArr);
     setTilesArr(newTilesArr);
   }
 
