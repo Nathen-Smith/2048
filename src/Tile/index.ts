@@ -19,11 +19,11 @@ export function colorMapper(value: number) {
     case 256:
       return 'bg-yellow-300';
     case 512:
-      return 'bg-yellow-200 text-5xl';
+      return 'bg-yellow-200';
     case 1024:
-      return 'bg-yellow-300 text-4xl';
+      return 'bg-yellow-300';
     case 2048:
-      return 'bg-yellow-400 text-4xl';
+      return 'bg-yellow-400';
     case 4096:
       return 'bg-teal-500';
     default:

@@ -252,8 +252,7 @@ function App() {
         </Dialog>
       </Transition.Root>
       <div
-        className={`absolute left-1/2 transform -translate-x-1/2 w-[470px] 
-        h-[470px] z-10 scale-90 md:scale-100`}
+        className="absolute left-1/2 transform -translate-x-1/2 grid z-10 "
         {...swipeRef}
       >
         {
@@ -266,11 +265,12 @@ function App() {
           }) => (
             <div
               key={key}
-              className={`h-[107px] w-[107px] absolute rounded-3px duration-100
+              className={`tile absolute rounded-3px duration-100
               transform ${transition}`}
             >
-              <div className={`h-[107px] w-[107px] flex justify-center 
-                items-center rounded-3px text-6xl font-bold text-white 
+              <div className={`tile flex justify-center 
+                items-center rounded-3px font-bold
+                text-white tile-${value}
                 ${colorMapper(value)} z-${zIndex} ${animation}`}
               >
                 {value}
@@ -279,14 +279,16 @@ function App() {
           ))
         }
       </div>
-      <div className={`z-1 bg-gray-300 flex flex-col space-y-[15px] scale-90
-       md:scale-100`}
-      >
+      <div className="z-1 bg-gray-300 flex flex-col">
         {[0, 1, 2, 3].map((rowIdx) => (
-          <div className="flex space-x-[15px] justify-center" key={rowIdx}>
+          <div
+            className={`flex justify-center ${rowIdx && 'grid-col'}`}
+            key={rowIdx}
+          >
             {[0, 1, 2, 3].map((colIdx) => (
               <div
-                className="h-[106.25px] w-[106.25px] rounded-3px bg-gray-400"
+                className={`tile rounded-3px bg-gray-400
+                 ${colIdx && 'grid-row'}`}
                 key={rowIdx * 4 + colIdx}
               />
             ))}
