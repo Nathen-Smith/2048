@@ -253,7 +253,7 @@ function App() {
       </Transition.Root>
       <div
         className={`absolute left-1/2 transform -translate-x-1/2 w-[470px] 
-        h-[470px] z-2`}
+        h-[470px] z-10 scale-90 md:scale-100`}
         {...swipeRef}
       >
         {
@@ -279,7 +279,9 @@ function App() {
           ))
         }
       </div>
-      <div className="z-1 bg-gray-300 flex flex-col space-y-[15px]">
+      <div className={`z-1 bg-gray-300 flex flex-col space-y-[15px] scale-90
+       md:scale-100`}
+      >
         {[0, 1, 2, 3].map((rowIdx) => (
           <div className="flex space-x-[15px] justify-center" key={rowIdx}>
             {[0, 1, 2, 3].map((colIdx) => (
