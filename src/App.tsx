@@ -116,10 +116,6 @@ function App() {
       } if (nextSpotIdx >= 0 && nextSpotIdx < 4
       && ((horizontalMove && (j !== nextSpotIdx))
       || (!horizontalMove && (i !== nextSpotIdx)))) {
-        // move to next valid spot
-        // if (mergeTransition().length > 17) {
-        //   console.log('fail move');
-        // }
         validMove = true;
         flatToArrPosMap.set(moveFlatIdx(), currTileArrIdx);
         currTile = {
