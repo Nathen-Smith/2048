@@ -307,8 +307,8 @@ function App() {
           }) => (
             <div
               key={key}
-              className={`tile absolute rounded-3px duration-100
-              transform ${transition}`}
+              className={'tile absolute rounded-3px duration-100'
+              + `transform${transition}`}
             >
               <div className={`tile flex justify-center 
                 items-center rounded-3px font-bold
