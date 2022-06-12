@@ -42,21 +42,25 @@ function App() {
 
     function moveTile({
       i, j, currTileArrIdx, nextSpotIdx,
-    }: MoveTileProps):number {
+    }: MoveTileProps, inputDir: Direction):number {
       const currFlatIdx = newTilesArr[currTileArrIdx].idx;
-      const reverseIteration = !!(dir === 'DOWN' || dir === 'RIGHT');
-      const horizontalMove = !!(dir === 'LEFT' || dir === 'RIGHT');
+      const reverseIteration = !!(inputDir === 'DOWN' || inputDir === 'RIGHT');
+      const horizontalMove = !!(inputDir === 'LEFT' || inputDir === 'RIGHT');
+
+      // input dir doesnt fix it..
+      // how do some tiles become negative?
+      // it's always after a move or merge...
 
       // default up
       let mergeFlatIdx = () => flatIdx(nextSpotIdx - 1, j);
       let mergeTransition = () => getTransition(nextSpotIdx - 1, j);
-      if (dir === 'DOWN') {
+      if (inputDir === 'DOWN') {
         mergeFlatIdx = () => flatIdx(nextSpotIdx + 1, j);
         mergeTransition = () => getTransition(nextSpotIdx + 1, j);
-      } else if (dir === 'LEFT') {
+      } else if (inputDir === 'LEFT') {
         mergeFlatIdx = () => flatIdx(i, nextSpotIdx - 1);
         mergeTransition = () => getTransition(i, nextSpotIdx - 1);
-      } else if (dir === 'RIGHT') {
+      } else if (inputDir === 'RIGHT') {
         mergeFlatIdx = () => flatIdx(i, nextSpotIdx + 1);
         mergeTransition = () => getTransition(i, nextSpotIdx + 1);
       }
@@ -72,24 +76,24 @@ function App() {
       const mergeTileIdx = flatToArrPosMap.get(mergeFlatIdx());
       let mergeTile = (mergeTileIdx !== undefined) && newTilesArr[mergeTileIdx];
 
-      if (mergeTileIdx !== undefined && mergeTile
+      if ((nextSpotIdx - 1) >= 0 && mergeTileIdx !== undefined && mergeTile
         && mergeTile.value === currTile.value) {
         // merge
         validMove = true;
         mergeTile = {
           ...mergeTile,
-          delete: true,
+          shouldDelete: true,
           zIndex: 10,
         };
         currTile = {
           ...currTile,
-          delete: true,
+          shouldDelete: true,
           idx: mergeFlatIdx(),
           transition: mergeTransition(),
         };
         const newTile = Tile({
-          i: matrixIndices(mergeFlatIdx()).i,
-          j: matrixIndices(mergeFlatIdx()).j,
+          i: matrixIndices(mergeTile.idx).i,
+          j: matrixIndices(mergeTile.idx).j,
           value: mergeTile.value * 2,
           state: 'MERGE',
         });
@@ -105,8 +109,8 @@ function App() {
           setBestScore(currTotalScore);
         }
         return nextSpotIdx;
-      } if ((horizontalMove && (j !== nextSpotIdx))
-      || (!horizontalMove && (i !== nextSpotIdx))) {
+      } if (nextSpotIdx >= 0 && moveFlatIdx() >= 0 && ((horizontalMove && (j !== nextSpotIdx))
+      || (!horizontalMove && (i !== nextSpotIdx)))) {
         // move to next valid spot
         validMove = true;
         flatToArrPosMap.set(moveFlatIdx(), currTileArrIdx);
@@ -130,7 +134,7 @@ function App() {
           if (currTileArrIdx !== undefined) {
             nextSpotIdx = moveTile({
               i, j, currTileArrIdx, nextSpotIdx,
-            });
+            }, 'UP');
           }
         }
       }
@@ -142,7 +146,7 @@ function App() {
           if (currTileArrIdx !== undefined) {
             nextSpotIdx = moveTile({
               i, j, currTileArrIdx, nextSpotIdx,
-            });
+            }, 'DOWN');
           }
         }
       }
@@ -154,7 +158,7 @@ function App() {
           if (currTileArrIdx !== undefined) {
             nextSpotIdx = moveTile({
               i, j, currTileArrIdx, nextSpotIdx,
-            });
+            }, 'LEFT');
           }
         }
       }
@@ -166,7 +170,7 @@ function App() {
           if (currTileArrIdx !== undefined) {
             nextSpotIdx = moveTile({
               i, j, currTileArrIdx, nextSpotIdx,
-            });
+            }, 'RIGHT');
           }
         }
       }

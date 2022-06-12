@@ -43,7 +43,7 @@ export interface TileMeta {
   idx: number;
   key: number;
   value: number;
-  delete: boolean;
+  shouldDelete: boolean;
   zIndex: number;
   transition: string;
   animation: string;
@@ -74,7 +74,7 @@ export function Tile({
     value,
     idx: flatIdx(i, j),
     key: newKey,
-    delete: false,
+    shouldDelete: false,
     zIndex: animationKey === 'MERGE' ? 20 : 10,
     transition: getTransition(i, j),
     animation: animationMap[animationKey],
@@ -110,8 +110,22 @@ export function spawnTileRandom({
 }
 
 export function removeMarkedTiles(tilesArr: TileMeta[]) {
+  // let len = tilesArr.length - 1;
+  // const cleanBoard: TileMeta[] = [];
+  // // eslint-disable-next-line no-plusplus
+  // for (let i = 0; i < len; i++) {
+  //   if (!tilesArr[len].shouldDelete) {
+  //     let newTile = tilesArr[len];
+  //     if (newTile.zIndex === 20) {
+  //       newTile = { ...newTile, zIndex: 10 };
+  //     }
+  //     cleanBoard.push(newTile);
+  //   }
+  // }
+  // return cleanBoard;
+
   return tilesArr
-    .filter((tile) => !tile.delete)
+    .filter((tile) => !tile.shouldDelete)
     .map((tile) => {
       const newTile = { ...tile, zIndex: 10 };
       return newTile;
