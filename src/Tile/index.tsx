@@ -1,5 +1,3 @@
-import React from 'react';
-
 export function colorMapper(value: number) {
   switch (value) {
     case 2:
@@ -85,11 +83,9 @@ export function Tile({
 
 interface SpawnTileRandomProps {
   tilesArr: TileMeta[];
-  setGameOver?: React.Dispatch<React.SetStateAction<boolean>>
 }
 export function spawnTileRandom({
   tilesArr,
-  setGameOver,
 } : SpawnTileRandomProps) {
   const tileIndices = new Set(tilesArr.map((tile) => tile.idx));
   const openIndices: number[] = [];
@@ -105,10 +101,6 @@ export function spawnTileRandom({
     i, j, value: 2, state: 'NEW',
   });
   tilesArr.push(newTile);
-  if (setGameOver === undefined) {
-    return;
-  }
-  setGameOver(false);
 }
 
 export function removeMarkedTiles(tilesArr: TileMeta[]) {
@@ -125,4 +117,57 @@ export function initialTilesRandom() {
   spawnTileRandom({ tilesArr: initialTiles });
   spawnTileRandom({ tilesArr: initialTiles });
   return initialTiles;
+}
+
+interface ValidGridMeta {
+  value: number;
+  zIndex: number;
+}
+export function validBoard(tilesArr: TileMeta[]) {
+  if (tilesArr.length < 16) {
+    return true;
+  }
+
+  const grid: ValidGridMeta[][] = [];
+  const gridRow: ValidGridMeta[] = [
+    { value: 0, zIndex: 0 },
+    { value: 0, zIndex: 0 },
+    { value: 0, zIndex: 0 },
+    { value: 0, zIndex: 0 },
+  ];
+  for (let m = 0; m < 4; m += 1) {
+    grid.push([...gridRow]);
+  }
+
+  let row = 0;
+  let col = 0;
+  let matrixCoords;
+  let currTile;
+  for (let tilesIdx = 0; tilesIdx < tilesArr.length; tilesIdx += 1) {
+    currTile = tilesArr[tilesIdx];
+    matrixCoords = matrixIndices(currTile.idx);
+    row = matrixCoords.i;
+    col = matrixCoords.j;
+    if (grid[row][col].zIndex < currTile.zIndex) {
+      grid[row][col] = { value: currTile.value, zIndex: currTile.zIndex };
+    }
+  }
+  let currTileVal;
+  for (let m = 0; m < 4; m += 1) {
+    for (let n = 0; n < 4; n += 1) {
+      currTileVal = grid[m][n].value;
+      if (currTileVal === 0) {
+        return true;
+      }
+      if (
+        (m > 0 && currTileVal === grid[m - 1][n].value)
+        || (m < 3 && currTileVal === grid[m + 1][n].value)
+        || (n > 0 && currTileVal === grid[m][n - 1].value)
+        || (n < 3 && currTileVal === grid[m][n + 1].value)
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
 }

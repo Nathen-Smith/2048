@@ -1,4 +1,6 @@
-import React, { useState, Fragment, useRef } from 'react';
+import React, {
+  useState, Fragment, useRef,
+} from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import useDirection from './hooks/useMovement';
 import useLocalStorage from './hooks/useLocalStorage';
@@ -12,6 +14,7 @@ import {
   matrixIndices,
   colorMapper,
   removeMarkedTiles,
+  validBoard,
 } from './Tile';
 import ScoreBox from './components/ScoreBox';
 import NewGameButton from './components/NewGameButton';
@@ -183,8 +186,10 @@ function App() {
     if (!validMove) {
       return;
     }
+
     spawnTileRandom({ tilesArr: newTilesArr });
     setTilesArr(newTilesArr);
+    if (!validBoard(newTilesArr)) { setGameOver(true); }
   }
 
   const swipeRef = useDirection({
