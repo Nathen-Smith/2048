@@ -75,7 +75,7 @@ export function Tile({
     idx: flatIdx(i, j),
     key: newKey,
     delete: false,
-    zIndex: animationKey === 'MERGE' ? 30 : 10,
+    zIndex: animationKey === 'MERGE' ? 20 : 10,
     transition: getTransition(i, j),
     animation: animationMap[animationKey],
   };
