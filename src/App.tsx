@@ -341,7 +341,7 @@ function App() {
           ))}
         </div>
       </div>
-      <footer className="mx-auto text-md text-stone-700">
+      <footer className="mx-auto text-sm sm:text-md text-stone-700">
         2048 clone built with React Hooks, TypeScript, and Tailwind CSS.
         Created by Nathen Smith. Source code can be found
         {' '}
