@@ -1,12 +1,7 @@
-/* eslint-disable jsx-a11y/interactive-supports-focus */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import {
-  FastForwardIcon,
-} from '@heroicons/react/outline';
 import useDirection from './hooks/useMovement';
+import useLocalStorage from './hooks/useLocalStorage';
 import {
   TileMeta,
   Tile,
@@ -18,9 +13,15 @@ import {
   colorMapper,
   removeMarkedTiles,
 } from './Tile';
+import ScoreBox from './components/ScoreBox';
+import NewGameButton from './components/NewGameButton';
 
 function App() {
-  const [tilesArr, setTilesArr] = useState<TileMeta[]>(initialTilesRandom);
+  const [tilesArr, setTilesArr] = useState<TileMeta[]>(initialTilesRandom());
+  const [gameOver, setGameOver] = useState(false);
+  const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useLocalStorage('bestScore', 0);
+  const restartButtonRef = useRef(null);
 
   type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
   function slideHandler(dir : Direction) {
@@ -98,6 +99,11 @@ function App() {
         flatToArrPosMap.set(currFlatIdx, newTilesArr.length - 1);
         flatToArrPosMap.delete(currFlatIdx);
         flatToArrPosMap.delete(mergeFlatIdx());
+        const currTotalScore = score + newTile.value;
+        setScore(currTotalScore);
+        if (score + newTile.value > bestScore) {
+          setBestScore(currTotalScore);
+        }
         return nextSpotIdx;
       } if ((horizontalMove && (j !== nextSpotIdx))
       || (!horizontalMove && (i !== nextSpotIdx))) {
@@ -168,7 +174,7 @@ function App() {
     if (!validMove) {
       return;
     }
-    spawnTileRandom(newTilesArr);
+    spawnTileRandom({ tilesArr: newTilesArr });
     setTilesArr(newTilesArr);
   }
 
@@ -179,19 +185,17 @@ function App() {
     onMoveRight: () => slideHandler('RIGHT'),
   });
 
-  const [open, setOpen] = useState(false);
-
   return (
-    <div className="h-screen relative">
-      <Transition.Root show={open} as={Fragment}>
+    <div>
+      <Transition.Root show={gameOver} as={Fragment}>
         <Dialog
           as="div"
           className="fixed z-50 inset-0 overflow-y-auto"
-          // initialFocus={cancelButtonRef}
-          onClose={setOpen}
+          initialFocus={restartButtonRef}
+          onClose={setGameOver}
         >
           <div className={`flex items-end justify-center 
-          min-h-screen text-center sm:block sm:p-0`}
+           text-center sm:block sm:p-0`}
           >
             <Transition.Child
               as={Fragment}
@@ -202,8 +206,14 @@ function App() {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Dialog.Overlay className={`fixed inset-0 bg-gray-500 
-              bg-opacity-75 transition-opacity cursor-pointer`}
+              <Dialog.Overlay
+                className={`fixed inset-0 bg-gray-300 
+              bg-opacity-50 transition-opacity cursor-pointer`}
+                onClick={() => {
+                  setGameOver(false);
+                  setTilesArr(initialTilesRandom());
+                  setScore(0);
+                }}
               />
             </Transition.Child>
 
@@ -225,37 +235,69 @@ function App() {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <div
-                onClick={() => {
-                  setOpen(false);
-                  // reset();
-                }}
-                className={`inline-block bg-white rounded-lg text-left 
-                overflow-hidden shadow-xl transform transition-all 
-                sm:my-8 sm:align-middle sm:max-w-lg sm:w-full`}
-                role="button"
+                className={`inline-block rounded-lg text-left 
+                overflow-hidden transform transition-all 
+                sm:my-8 sm:align-middle text-center`}
 
               >
-                <div className={`bg-white px-4 pt-5 pb-4 sm:p-6 
-                sm:pb-4 justify-center`}
-                >
-                  <div className={`mx-auto justify-center 
-                  flex flex-col text-center mt-3 sm:mt-0 sm:text-left`}
+                <div className="flex flex-col mt-64">
+                  <div className="text-6xl sm:text-8xl mb-10 sm:mb-32
+                  font-bold text-stone-600 inline-block opacity-75"
                   >
-                    2048 New game
-                    {/* {error && 'Restart'} */}
-                    <FastForwardIcon className="w-10 cursor-pointer" />
+                    Game Over!
                   </div>
+                  <NewGameButton
+                    setGameOver={setGameOver}
+                    setTilesArr={setTilesArr}
+                    setScore={setScore}
+                    restartButtonRef={restartButtonRef}
+                  />
                 </div>
               </div>
+
             </Transition.Child>
           </div>
         </Dialog>
       </Transition.Root>
-      <div
-        className="absolute left-1/2 transform -translate-x-1/2 grid z-10 "
-        {...swipeRef}
-      >
-        {
+      <div className="w-grid-full mx-auto mt-2 px-4 sm:px-0">
+        <div className="flex justify-between">
+          <div
+            className={`text-5xl sm:text-7xl
+             font-bold text-stone-600 inline-block`}
+          >
+            2048
+          </div>
+          <div className="inline-block text-right">
+            <div className="flex space-x-1 float-right">
+              <ScoreBox score={score} label="score" />
+              <ScoreBox score={bestScore} label="best" />
+            </div>
+          </div>
+        </div>
+        <div className="float-right">
+          <NewGameButton
+            setGameOver={setGameOver}
+            setTilesArr={setTilesArr}
+            setScore={setScore}
+          />
+        </div>
+      </div>
+
+      <div className="mt-10 sm:mt-12">
+        <div>
+          <div
+            className={`absolute transform -translate-x-1/2 left-1/2 
+            grid-border rounded-md`}
+            style={{ backgroundColor: '#bbada0' }}
+          />
+        </div>
+
+        <div
+          className="grid-center z-10 "
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...swipeRef}
+        >
+          {
           tilesArr.map(({
             key,
             value,
@@ -270,7 +312,7 @@ function App() {
             >
               <div className={`tile flex justify-center 
                 items-center rounded-3px font-bold
-                text-white tile-${value}
+                tile-${value}
                 ${colorMapper(value)} z-${zIndex} ${animation}`}
               >
                 {value}
@@ -278,22 +320,26 @@ function App() {
             </div>
           ))
         }
-      </div>
-      <div className="z-1 bg-gray-300 flex flex-col">
-        {[0, 1, 2, 3].map((rowIdx) => (
-          <div
-            className={`flex justify-center ${rowIdx && 'grid-col'}`}
-            key={rowIdx}
-          >
-            {[0, 1, 2, 3].map((colIdx) => (
-              <div
-                className={`tile rounded-3px bg-gray-400
-                 ${colIdx && 'grid-row'}`}
-                key={rowIdx * 4 + colIdx}
-              />
-            ))}
-          </div>
-        ))}
+        </div>
+        <div
+          className="grid-center"
+          style={{ backgroundColor: '#bbada0' }}
+        >
+          {[0, 1, 2, 3].map((rowIdx) => (
+            <div
+              className="flex justify-center grid-col"
+              key={rowIdx}
+            >
+              {[0, 1, 2, 3].map((colIdx) => (
+                <div
+                  className="tile rounded-3px grid-row"
+                  style={{ backgroundColor: 'rgba(238, 228, 218, 0.35)' }}
+                  key={rowIdx * 4 + colIdx}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

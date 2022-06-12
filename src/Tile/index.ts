@@ -1,31 +1,31 @@
+import React from 'react';
+
 export function colorMapper(value: number) {
   switch (value) {
-    case 0:
-      return 'bg-stone-200';
     case 2:
       return 'bg-stone-100 text-stone-500';
     case 4:
       return 'bg-orange-100 text-stone-600';
     case 8:
-      return 'bg-orange-300';
+      return 'bg-orange-300 text-white';
     case 16:
-      return 'bg-orange-400';
+      return 'bg-orange-400 text-white';
     case 32:
-      return 'bg-red-400';
+      return 'bg-red-400 text-white';
     case 64:
-      return 'bg-red-500';
+      return 'bg-red-500 text-white';
     case 128:
-      return 'bg-yellow-200';
+      return 'bg-yellow-200 text-white';
     case 256:
-      return 'bg-yellow-300';
+      return 'bg-yellow-300 text-white';
     case 512:
-      return 'bg-yellow-200';
+      return 'bg-yellow-200 text-white';
     case 1024:
-      return 'bg-yellow-300';
+      return 'bg-yellow-300 text-white';
     case 2048:
-      return 'bg-yellow-400';
+      return 'bg-yellow-400 text-white';
     case 4096:
-      return 'bg-teal-500';
+      return 'bg-teal-500 text-white';
     default:
       break;
   }
@@ -81,8 +81,15 @@ export function Tile({
   };
 }
 
-export function spawnTileRandom(newTilesArr : TileMeta[]) {
-  const tileIndices = new Set(newTilesArr.map((tile) => tile.idx));
+interface SpawnTileRandomProps {
+  tilesArr: TileMeta[];
+  setGameOver?: React.Dispatch<React.SetStateAction<boolean>>
+}
+export function spawnTileRandom({
+  tilesArr,
+  setGameOver,
+} : SpawnTileRandomProps) {
+  const tileIndices = new Set(tilesArr.map((tile) => tile.idx));
   const openIndices: number[] = [];
   for (let i = 0; i < 16; i += 1) {
     if (!tileIndices.has(i)) {
@@ -95,7 +102,11 @@ export function spawnTileRandom(newTilesArr : TileMeta[]) {
   const newTile = Tile({
     i, j, value: 2, state: 'NEW',
   });
-  newTilesArr.push(newTile);
+  tilesArr.push(newTile);
+  if (setGameOver === undefined) {
+    return;
+  }
+  setGameOver(false);
 }
 
 export function removeMarkedTiles(tilesArr: TileMeta[]) {
@@ -107,6 +118,9 @@ export function removeMarkedTiles(tilesArr: TileMeta[]) {
     });
 }
 
-export const initialTilesRandom: TileMeta[] = [];
-spawnTileRandom(initialTilesRandom);
-spawnTileRandom(initialTilesRandom);
+export function initialTilesRandom() {
+  const initialTiles: TileMeta[] = [];
+  spawnTileRandom({ tilesArr: initialTiles });
+  spawnTileRandom({ tilesArr: initialTiles });
+  return initialTiles;
+}

@@ -2,18 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  background-color: #faf8ef;
+}
+
+:focus {
+  outline: none;
+}
+
 /* only for responsive design */
 
 :root {
-  --grid-gap: 16px;
-  --tile-size: 128px;
+  --grid-gap: 15px;
+  --tile-size: 112px;
   --offset-one: calc(var(--tile-size) + var(--grid-gap));
   --offset-two: calc(var(--offset-one) * 2);
   --offset-three: calc(var(--offset-one) * 3);
   --grid-size: calc((var(--tile-size) * 4) + (var(--grid-gap) * 3))
 }
 
-@media screen and (max-width: 560px) {
+@media screen and (max-width: 523px) {
   :root {
     --tile-size: calc(22vw);
     --grid-gap: calc(var(--tile-size) / 8);
@@ -43,17 +51,38 @@
   }
 }
 
-.grid {
+.w-grid-full {
+  width: calc(var(--grid-size) + (2 * var(--grid-gap)));
+}
+
+.grid-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   height: var(--grid-size);
-  width: var(--grid-size)
+  width: var(--grid-size);
+  margin-top: var(--grid-gap);
+}
+
+.grid-border {
+  height: calc(var(--grid-size) + (2 * var(--grid-gap)));
+  width: calc(var(--grid-size) + (2 * var(--grid-gap)));
 }
 
 .grid-row {
   margin-left: var(--grid-gap);
 }
 
+.grid-row:first-child {
+  margin-left: 0;
+}
+
 .grid-col {
   margin-top: var(--grid-gap);
+}
+
+.grid-col:first-child {
+  margin-top: 0;
 }
 
 .tile {
