@@ -110,20 +110,6 @@ export function spawnTileRandom({
 }
 
 export function removeMarkedTiles(tilesArr: TileMeta[]) {
-  // let len = tilesArr.length - 1;
-  // const cleanBoard: TileMeta[] = [];
-  // // eslint-disable-next-line no-plusplus
-  // for (let i = 0; i < len; i++) {
-  //   if (!tilesArr[len].shouldDelete) {
-  //     let newTile = tilesArr[len];
-  //     if (newTile.zIndex === 20) {
-  //       newTile = { ...newTile, zIndex: 10 };
-  //     }
-  //     cleanBoard.push(newTile);
-  //   }
-  // }
-  // return cleanBoard;
-
   return tilesArr
     .filter((tile) => !tile.shouldDelete)
     .map((tile) => {
