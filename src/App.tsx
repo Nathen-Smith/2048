@@ -76,7 +76,10 @@ function App() {
       const mergeTileIdx = flatToArrPosMap.get(mergeFlatIdx());
       let mergeTile = (mergeTileIdx !== undefined) && newTilesArr[mergeTileIdx];
 
-      if ((nextSpotIdx - 1) >= 0 && mergeTileIdx !== undefined && mergeTile
+      if (
+        ((!reverseIteration && nextSpotIdx > 0)
+        || (reverseIteration && nextSpotIdx < 3))
+        && mergeTileIdx !== undefined && mergeTile
         && mergeTile.value === currTile.value) {
         // merge
         validMove = true;
@@ -96,6 +99,7 @@ function App() {
           j: matrixIndices(mergeTile.idx).j,
           value: mergeTile.value * 2,
           state: 'MERGE',
+          transition: mergeTransition(),
         });
         newTilesArr[mergeTileIdx] = mergeTile;
         newTilesArr[currTileArrIdx] = currTile;
@@ -109,9 +113,13 @@ function App() {
           setBestScore(currTotalScore);
         }
         return nextSpotIdx;
-      } if (nextSpotIdx >= 0 && moveFlatIdx() >= 0 && ((horizontalMove && (j !== nextSpotIdx))
+      } if (nextSpotIdx >= 0 && nextSpotIdx < 4
+      && ((horizontalMove && (j !== nextSpotIdx))
       || (!horizontalMove && (i !== nextSpotIdx)))) {
         // move to next valid spot
+        // if (mergeTransition().length > 17) {
+        //   console.log('fail move');
+        // }
         validMove = true;
         flatToArrPosMap.set(moveFlatIdx(), currTileArrIdx);
         currTile = {
@@ -126,11 +134,12 @@ function App() {
       return reverseIteration ? nextSpotIdx - 1 : nextSpotIdx + 1;
     }
 
+    let currTileArrIdx;
     if (dir === 'UP') {
       for (let j = 0; j < 4; j += 1) {
         let nextSpotIdx = 0;
         for (let i = 0; i < 4; i += 1) {
-          const currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
+          currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
           if (currTileArrIdx !== undefined) {
             nextSpotIdx = moveTile({
               i, j, currTileArrIdx, nextSpotIdx,
@@ -142,7 +151,7 @@ function App() {
       for (let j = 3; j >= 0; j -= 1) {
         let nextSpotIdx = 3;
         for (let i = 3; i >= 0; i -= 1) {
-          const currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
+          currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
           if (currTileArrIdx !== undefined) {
             nextSpotIdx = moveTile({
               i, j, currTileArrIdx, nextSpotIdx,
@@ -154,7 +163,7 @@ function App() {
       for (let i = 0; i < 4; i += 1) {
         let nextSpotIdx = 0;
         for (let j = 0; j < 4; j += 1) {
-          const currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
+          currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
           if (currTileArrIdx !== undefined) {
             nextSpotIdx = moveTile({
               i, j, currTileArrIdx, nextSpotIdx,
@@ -166,7 +175,7 @@ function App() {
       for (let i = 3; i >= 0; i -= 1) {
         let nextSpotIdx = 3;
         for (let j = 3; j >= 0; j -= 1) {
-          const currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
+          currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
           if (currTileArrIdx !== undefined) {
             nextSpotIdx = moveTile({
               i, j, currTileArrIdx, nextSpotIdx,

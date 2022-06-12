@@ -64,19 +64,21 @@ interface NewTileProps {
   value: number;
   state?: TileState;
   key?: number;
+  transition?: string;
 }
 export function Tile({
-  i, j, value, state, key,
+  i, j, value, state, key, transition,
 }: NewTileProps): TileMeta {
   const animationKey = state || 'NONE';
   const newKey = key || (Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+  const newTransition = transition || getTransition(i, j);
   return {
     value,
     idx: flatIdx(i, j),
     key: newKey,
     shouldDelete: false,
     zIndex: animationKey === 'MERGE' ? 20 : 10,
-    transition: getTransition(i, j),
+    transition: newTransition,
     animation: animationMap[animationKey],
   };
 }
@@ -113,7 +115,7 @@ export function removeMarkedTiles(tilesArr: TileMeta[]) {
   return tilesArr
     .filter((tile) => !tile.shouldDelete)
     .map((tile) => {
-      const newTile = { ...tile, zIndex: 10 };
+      const newTile = { ...tile, zIndex: 10, animation: '' };
       return newTile;
     });
 }
