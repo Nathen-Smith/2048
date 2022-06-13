@@ -213,10 +213,10 @@ function App() {
           >
             <Transition.Child
               as={Fragment}
-              enter="ease-out duration-300"
+              enter="ease-out duration-700 delay-100"
               enterFrom="opacity-0"
               enterTo="opacity-100"
-              leave="ease-in duration-200"
+              leave="ease-in duration-300"
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
@@ -241,21 +241,21 @@ function App() {
             </span>
             <Transition.Child
               as={Fragment}
-              enter="ease-out duration-300"
+              enter="ease-out duration-700 delay-100"
               enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               enterTo="opacity-100 translate-y-0 sm:scale-100"
-              leave="ease-in duration-200"
+              leave="ease-in duration-300"
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <div
                 className={`inline-block rounded-lg text-left 
                 overflow-hidden transform transition-all 
-                sm:my-8 sm:align-middle text-center`}
+                -my-16 sm:my-0 text-center`}
 
               >
                 <div className="flex flex-col mt-64">
-                  <div className="text-6xl sm:text-8xl mb-10 sm:mb-32
+                  <div className="text-7xl sm:text-8xl mb-10 sm:mb-32
                   font-bold text-stone-600 inline-block opacity-75"
                   >
                     Game Over!
