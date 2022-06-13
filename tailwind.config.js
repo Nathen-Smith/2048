@@ -9,6 +9,14 @@ module.exports = {
       borderRadius: {
         '3px': '3px',
       },
+      colors: {
+        yellow: {
+          250: '#FEE869',
+        },
+        amber: {
+          250: '#FDDD6C',
+        },
+      },
     },
   },
   plugins: [],

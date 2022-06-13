@@ -13,11 +13,11 @@ export function colorMapper(value: number) {
     case 64:
       return 'bg-red-500 text-white';
     case 128:
-      return 'bg-yellow-200 text-white';
+      return 'bg-yellow-250 text-white';
     case 256:
-      return 'bg-yellow-300 text-white';
+      return 'bg-amber-250 text-white';
     case 512:
-      return 'bg-yellow-200 text-white';
+      return 'bg-amber-300 text-white';
     case 1024:
       return 'bg-yellow-300 text-white';
     case 2048:

@@ -204,7 +204,7 @@ function App() {
       <Transition.Root show={gameOver} as={Fragment}>
         <Dialog
           as="div"
-          className="fixed z-50 inset-0 overflow-y-auto"
+          className="fixed z-50 inset-0"
           initialFocus={restartButtonRef}
           onClose={setGameOver}
         >
@@ -222,7 +222,7 @@ function App() {
             >
               <Dialog.Overlay
                 className={`fixed inset-0 bg-gray-300 
-              bg-opacity-50 transition-opacity cursor-pointer`}
+              bg-opacity-70 transition-opacity cursor-pointer`}
                 onClick={() => {
                   setGameOver(false);
                   setTilesArr(initialTilesRandom());
@@ -256,7 +256,7 @@ function App() {
               >
                 <div className="flex flex-col mt-64">
                   <div className="text-7xl sm:text-8xl mb-10 sm:mb-32
-                  font-bold text-stone-600 inline-block opacity-75"
+                  font-bold text-stone-600 inline-block opacity-100"
                   >
                     Game Over!
                   </div>
