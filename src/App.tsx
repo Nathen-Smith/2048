@@ -249,7 +249,7 @@ function App() {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <div
-                className={`inline-block rounded-lg text-left 
+                className={`inline-block rounded-lg 
                 overflow-hidden transform transition-all 
                 -my-16 sm:my-0 text-center`}
 
