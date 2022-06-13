@@ -50,10 +50,6 @@ function App() {
       const reverseIteration = !!(inputDir === 'DOWN' || inputDir === 'RIGHT');
       const horizontalMove = !!(inputDir === 'LEFT' || inputDir === 'RIGHT');
 
-      // input dir doesnt fix it..
-      // how do some tiles become negative?
-      // it's always after a move or merge...
-
       // default up
       let mergeFlatIdx = () => flatIdx(nextSpotIdx - 1, j);
       let mergeTransition = () => getTransition(nextSpotIdx - 1, j);
