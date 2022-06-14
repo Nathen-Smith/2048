@@ -119,7 +119,7 @@ export function initialTilesRandom() {
   return initialTiles;
 }
 
-interface ValidGridMeta {
+interface ValidGridProps {
   value: number;
   zIndex: number;
 }
@@ -128,8 +128,8 @@ export function validBoard(tilesArr: TileMeta[]) {
     return true;
   }
 
-  const grid: ValidGridMeta[][] = [];
-  const gridRow: ValidGridMeta[] = [
+  const grid: ValidGridProps[][] = [];
+  const gridRow: ValidGridProps[] = [
     { value: 0, zIndex: 0 },
     { value: 0, zIndex: 0 },
     { value: 0, zIndex: 0 },
@@ -170,4 +170,42 @@ export function validBoard(tilesArr: TileMeta[]) {
     }
   }
   return false;
+}
+
+interface SmartSpawnTileRandomProps {
+  tilesArr: TileMeta[];
+}
+export function smartSpawnTileRandom({
+  tilesArr,
+} : SmartSpawnTileRandomProps) {
+  // find the areas with the lowest row and column score
+  // what happens when the forbidden move is made?
+  /*
+    1024 512 256 128
+    8   16  32  64
+    4   2   x   x
+    x   x   x   x
+
+    can't spawn in column index 0
+
+    1024 512 256 128
+    8   16  32  64
+    4   2   x   x
+    x   x   x   x
+  */
+
+  const tileIndices = new Set(tilesArr.map((tile) => tile.idx));
+  const openIndices: number[] = [];
+  for (let i = 0; i < 16; i += 1) {
+    if (!tileIndices.has(i)) {
+      openIndices.push(i);
+    }
+  }
+  const newTileIdx = openIndices[Math.floor(openIndices.length
+     * Math.random())];
+  const { i, j } = matrixIndices(newTileIdx);
+  const newTile = Tile({
+    i, j, value: 2, state: 'NEW',
+  });
+  tilesArr.push(newTile);
 }
