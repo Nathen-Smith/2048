@@ -13,17 +13,17 @@ export function colorMapper(value: number) {
     case 64:
       return 'bg-red-500 text-white';
     case 128:
-      return 'bg-yellow-250 text-white';
+      return 'bg-yellow-250 text-white shadow-lg shadow-yellow-250/50';
     case 256:
-      return 'bg-amber-250 text-white';
+      return 'bg-amber-250 text-white shadow-lg shadow-amber-250/50';
     case 512:
-      return 'bg-amber-300 text-white';
+      return 'bg-amber-300 text-white shadow-lg shadow-amber-300/50';
     case 1024:
-      return 'bg-yellow-300 text-white';
+      return 'bg-yellow-300 text-white shadow-lg shadow-yellow-300/50';
     case 2048:
-      return 'bg-yellow-400 text-white';
+      return 'bg-yellow-400 text-white shadow-lg shadow-yellow-400/50';
     case 4096:
-      return 'bg-teal-500 text-white';
+      return 'bg-teal-500 text-white shadow-lg shadow-teal-500/50';
     default:
       break;
   }
