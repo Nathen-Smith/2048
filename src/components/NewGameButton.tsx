@@ -22,7 +22,7 @@ function NewGameButton({
       ref={restartButtonRef}
       type="button"
       className={`text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold
-        text-md mx-auto`}
+        text-md mx-auto cursor-pointer`}
       style={{ backgroundColor: '#8f7a66', color: '#f9f6f2' }}
     >
       New Game

@@ -112,9 +112,8 @@ function App() {
           setBestScore(currTotalScore);
         }
         return nextSpotIdx;
-      } if (nextSpotIdx >= 0 && nextSpotIdx < 4
-      && ((horizontalMove && (j !== nextSpotIdx))
-      || (!horizontalMove && (i !== nextSpotIdx)))) {
+      } if ((horizontalMove && (j !== nextSpotIdx))
+      || (!horizontalMove && (i !== nextSpotIdx))) {
         validMove = true;
         flatToArrPosMap.set(moveFlatIdx(), currTileArrIdx);
         currTile = {
