@@ -87,6 +87,58 @@ interface SpawnTileRandomProps {
 export function spawnTileRandom({
   tilesArr,
 } : SpawnTileRandomProps) {
+  const idxFilled = [];
+  for (let i = 0; i < 16; i += 1) {
+    idxFilled.push(false);
+  }
+  for (let i = 0; i < tilesArr.length; i += 1) {
+    idxFilled[tilesArr[i].idx] = true;
+  }
+  const openIndices = [];
+  for (let i = 0; i < 16; i += 1) {
+    if (!idxFilled[i]) {
+      openIndices.push(i);
+    }
+  }
+  const newTileIdx = openIndices[Math.floor(openIndices.length
+     * Math.random())];
+  const { i, j } = matrixIndices(newTileIdx);
+  const newTile = Tile({
+    i, j, value: 2, state: 'NEW',
+  });
+  tilesArr.push(newTile);
+}
+
+export function smartSpawnTileRandom({
+  tilesArr,
+} : SpawnTileRandomProps) {
+  /*
+    avoid the forbidden move
+    avoid messing up the monotonic increasing sequence.
+
+    512 128 64  x
+    x   x   x   x
+    x   x   x   x
+    x   x   x   x
+
+    L  128  64  32
+    x   x   x   x
+    x   x   x   x
+    x   x   x   x
+
+    how to avoid forbidden move?
+    if we create
+
+    L   L   x   x
+    L   L   x   x
+    L   L   x   x
+    L   L   x   x
+
+    there is something in common with forbidden/mess up
+    it messes up a monotonic increasing.
+    (create grid of log_2(value))
+
+  */
   const tileIndices = new Set(tilesArr.map((tile) => tile.idx));
   const openIndices: number[] = [];
   for (let i = 0; i < 16; i += 1) {
