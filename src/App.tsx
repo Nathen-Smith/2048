@@ -8,6 +8,7 @@ import {
   TileMeta,
   Tile,
   spawnTileRandom,
+  smartSpawnTileRandom,
   initialTilesRandom,
   flatIdx,
   getTransition,
@@ -18,6 +19,7 @@ import {
 } from './Tile';
 import ScoreBox from './components/ScoreBox';
 import NewGameButton from './components/NewGameButton';
+import MyToggle from './components/MyToggle';
 
 function App() {
   const [tilesArr, setTilesArr] = useState<TileMeta[]>(initialTilesRandom());
@@ -25,6 +27,7 @@ function App() {
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useLocalStorage('bestScore', 0);
   const restartButtonRef = useRef(null);
+  const [friendlySpawning, setFriendlySpawning] = useState(true);
 
   type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
   function slideHandler(dir : Direction) {
@@ -89,6 +92,7 @@ function App() {
         };
         currTile = {
           ...currTile,
+          zIndex: 20,
           shouldDelete: true,
           idx: mergeFlatIdx(),
           transition: mergeTransition(),
@@ -182,7 +186,11 @@ function App() {
       return;
     }
 
-    spawnTileRandom({ tilesArr: newTilesArr });
+    if (friendlySpawning) {
+      smartSpawnTileRandom({ tilesArr: newTilesArr });
+    } else {
+      spawnTileRandom({ tilesArr: newTilesArr });
+    }
     setTilesArr(newTilesArr);
     if (!validBoard(newTilesArr)) { setGameOver(true); }
   }
@@ -251,7 +259,7 @@ function App() {
               >
                 <div className="flex flex-col mt-64">
                   <div className="text-7xl sm:text-8xl mb-10 sm:mb-32
-                  font-bold text-stone-600 inline-block opacity-100"
+                  font-bold text-stone-600 opacity-100"
                   >
                     Game Over!
                   </div>
@@ -283,7 +291,11 @@ function App() {
             </div>
           </div>
         </div>
-        <div className="float-right">
+        <div className="flex justify-between">
+          <MyToggle
+            enabled={friendlySpawning}
+            setEnabled={setFriendlySpawning}
+          />
           <NewGameButton
             setGameOver={setGameOver}
             setTilesArr={setTilesArr}

@@ -75,7 +75,7 @@ export function Tile({
     idx: flatIdx(i, j),
     key: newKey,
     shouldDelete: false,
-    zIndex: animationKey === 'MERGE' ? 20 : 10,
+    zIndex: animationKey === 'MERGE' ? 30 : 10,
     transition: newTransition,
     animation: animationMap[animationKey],
   };
@@ -87,16 +87,10 @@ interface SpawnTileRandomProps {
 export function spawnTileRandom({
   tilesArr,
 } : SpawnTileRandomProps) {
-  const idxFilled = [];
+  const tileIndices = new Set(tilesArr.map((tile) => tile.idx));
+  const openIndices: number[] = [];
   for (let i = 0; i < 16; i += 1) {
-    idxFilled.push(false);
-  }
-  for (let i = 0; i < tilesArr.length; i += 1) {
-    idxFilled[tilesArr[i].idx] = true;
-  }
-  const openIndices = [];
-  for (let i = 0; i < 16; i += 1) {
-    if (!idxFilled[i]) {
+    if (!tileIndices.has(i)) {
       openIndices.push(i);
     }
   }
@@ -112,43 +106,91 @@ export function spawnTileRandom({
 export function smartSpawnTileRandom({
   tilesArr,
 } : SpawnTileRandomProps) {
-  /*
-    avoid the forbidden move
-    avoid messing up the monotonic increasing sequence.
+  // tilesArr can have merging tiles and hidden ones
+  let i;
+  let j;
+  const grid : number[][] = [];
+  const gridRow = [0, 0, 0, 0];
+  for (let idx = 0; idx < 4; idx += 1) {
+    grid.push([...gridRow]);
+  }
+  let currTile;
+  let numTiles = 0;
+  for (let tilesIdx = 0; tilesIdx < tilesArr.length; tilesIdx += 1) {
+    currTile = tilesArr[tilesIdx];
+    if (!currTile.shouldDelete) {
+      ({ i, j } = matrixIndices(currTile.idx));
+      grid[i][j] = currTile.value;
+      numTiles += 1;
+    }
+  }
+  function preventBadSpawn() {
+    let currNumTiles = 0;
+    let openSpotIdx = 0;
+    const blockedSpot = false;
+    for (let rowIdx = 0; rowIdx < 4; rowIdx += 1) {
+      for (let colIdx = 0; colIdx < 4; colIdx += 1) {
+        if (grid[rowIdx][colIdx] > 0) {
+          currNumTiles += 1;
+        } else {
+          if (colIdx > numTiles) {
+            // more than 1 open tile
+            break;
+          }
+          openSpotIdx = colIdx;
+        }
+      }
+      if (currNumTiles === 3
+        && ((openSpotIdx > 0 && grid[rowIdx][openSpotIdx - 1] > 2)
+        || (openSpotIdx < 3 && grid[rowIdx][openSpotIdx + 1] > 2))) {
+        // forbidden spot
+        grid[rowIdx][openSpotIdx] = -1;
+        break;
+      }
+      currNumTiles = 0;
+      openSpotIdx = 0;
+    }
+    if (!blockedSpot) {
+      for (let colIdx = 0; colIdx < 4; colIdx += 1) {
+        for (let rowIdx = 0; rowIdx < 4; rowIdx += 1) {
+          if (grid[rowIdx][colIdx] > 0) {
+            currNumTiles += 1;
+          } else {
+            if (rowIdx > currNumTiles) {
+              // more than 1 open tile
+              break;
+            }
+            openSpotIdx = rowIdx;
+          }
+        }
+        if (currNumTiles === 3
+          && ((openSpotIdx > 0 && grid[openSpotIdx - 1][colIdx] > 2)
+          || (openSpotIdx < 3 && grid[openSpotIdx + 1][colIdx] > 2))) {
+          // forbidden spot
+          grid[openSpotIdx][colIdx] = -1;
+          break;
+        }
+        currNumTiles = 0;
+        openSpotIdx = 0;
+      }
+    }
+  }
+  // can only smart spawn if we have more than one option
+  if (numTiles < 15) {
+    preventBadSpawn();
+  }
 
-    512 128 64  x
-    x   x   x   x
-    x   x   x   x
-    x   x   x   x
-
-    L  128  64  32
-    x   x   x   x
-    x   x   x   x
-    x   x   x   x
-
-    how to avoid forbidden move?
-    if we create
-
-    L   L   x   x
-    L   L   x   x
-    L   L   x   x
-    L   L   x   x
-
-    there is something in common with forbidden/mess up
-    it messes up a monotonic increasing.
-    (create grid of log_2(value))
-
-  */
-  const tileIndices = new Set(tilesArr.map((tile) => tile.idx));
   const openIndices: number[] = [];
-  for (let i = 0; i < 16; i += 1) {
-    if (!tileIndices.has(i)) {
-      openIndices.push(i);
+  for (let rowIdx = 0; rowIdx < 4; rowIdx += 1) {
+    for (let colIdx = 0; colIdx < 4; colIdx += 1) {
+      if (grid[rowIdx][colIdx] === 0) {
+        openIndices.push(flatIdx(rowIdx, colIdx));
+      }
     }
   }
   const newTileIdx = openIndices[Math.floor(openIndices.length
      * Math.random())];
-  const { i, j } = matrixIndices(newTileIdx);
+  ({ i, j } = matrixIndices(newTileIdx));
   const newTile = Tile({
     i, j, value: 2, state: 'NEW',
   });
