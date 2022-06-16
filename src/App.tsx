@@ -10,13 +10,12 @@ import {
   spawnTileRandom,
   friendlySpawnTile,
   initialTilesRandom,
-  flatIdx,
   getTransition,
-  matrixIndices,
   colorMapper,
   removeMarkedTiles,
-  validBoard,
 } from './Tile';
+import validBoard from './Grid';
+import { flatIdx, matrixIndices } from './utils/coordinateUtils';
 import ScoreBox from './components/ScoreBox';
 import NewGameButton from './components/NewGameButton';
 import MyToggle from './components/MyToggle';
