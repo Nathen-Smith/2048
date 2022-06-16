@@ -8,7 +8,7 @@ import {
   TileMeta,
   Tile,
   spawnTileRandom,
-  smartSpawnTileRandom,
+  friendlySpawnTile,
   initialTilesRandom,
   flatIdx,
   getTransition,
@@ -187,7 +187,7 @@ function App() {
     }
 
     if (friendlySpawning) {
-      smartSpawnTileRandom({ tilesArr: newTilesArr });
+      friendlySpawnTile({ tilesArr: newTilesArr });
     } else {
       spawnTileRandom({ tilesArr: newTilesArr });
     }
@@ -304,7 +304,7 @@ function App() {
         </div>
       </div>
 
-      <div className="mt-10 sm:mt-12">
+      <div className="mt-8 sm:mt-10">
         <div>
           <div
             className={`absolute transform -translate-x-1/2 left-1/2 

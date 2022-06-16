@@ -103,7 +103,7 @@ export function spawnTileRandom({
   tilesArr.push(newTile);
 }
 
-export function smartSpawnTileRandom({
+export function friendlySpawnTile({
   tilesArr,
 } : SpawnTileRandomProps) {
   // tilesArr can have merging tiles and hidden ones
