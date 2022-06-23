@@ -18,6 +18,12 @@ export const animationMap = {
   NONE: '',
 };
 
+let keyId = 0;
+function newKeyId() {
+  keyId += 1;
+  return keyId;
+}
+
 interface NewTileProps {
   i: number;
   j: number;
@@ -30,7 +36,7 @@ export function Tile({
   i, j, value, state, key, transition,
 }: NewTileProps): TileMeta {
   const animationKey = state || 'NONE';
-  const newKey = key || (Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+  const newKey = key || newKeyId();
   const newTransition = transition || getTransition(i, j);
   return {
     value,
