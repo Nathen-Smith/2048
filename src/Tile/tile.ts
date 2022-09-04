@@ -71,6 +71,15 @@ export function spawnTileRandom({
   tilesArr.push(newTile);
 }
 
+/* friendlySpawnTile
+  *  DESCRIPTION: Constructs a matrix out of the game state tilesArr, then runs
+  *  preventBadSpawn if we have multiple empty tiles (options). Finally, we
+  *  spawn a tile following the same random algorithm in spawnTileRandom
+  *  INPUTS:
+  *    tilesArr: tileMeta[]
+  *  OUTPUTS: None
+  *  SIDE EFFECTS: adds a new tile to tilesArr
+  */
 export function friendlySpawnTile({
   tilesArr,
 } : SpawnTileRandomProps) {
@@ -92,10 +101,23 @@ export function friendlySpawnTile({
       numTiles += 1;
     }
   }
+  /* preventBadSpawn
+  *  DESCRIPTION: Parses grid firstly row-wise, then column-wise. If there are
+  *  exactly 3 tiles in this row or column, and the number next to the open
+  *  spot is greater than 2, we prevent spawning a tile in this open spot.
+  *  This way, a newly spawned tile cannot mess up the sub-optimal move.
+  *  Similarly, a forbidden move cannot occur as a row or column will only
+  *  be filled if we can merge.
+  *  INPUTS:
+  *    grid: number[][]
+  *  OUTPUTS: None
+  *  SIDE EFFECTS: Could place a -1 in grid
+  */
   function preventBadSpawn() {
     let currNumTiles = 0;
     let openSpotIdx = 0;
-    const blockedSpot = false;
+    let preventedBadSpawn = false;
+    // first check rows: building highest piece horizontally
     for (let rowIdx = 0; rowIdx < 4; rowIdx += 1) {
       for (let colIdx = 0; colIdx < 4; colIdx += 1) {
         if (grid[rowIdx][colIdx] > 0) {
@@ -112,35 +134,38 @@ export function friendlySpawnTile({
         && ((openSpotIdx > 0 && grid[rowIdx][openSpotIdx - 1] > 2)
         || (openSpotIdx < 3 && grid[rowIdx][openSpotIdx + 1] > 2))) {
         // forbidden spot
+        preventedBadSpawn = true;
         grid[rowIdx][openSpotIdx] = -1;
         break;
       }
       currNumTiles = 0;
       openSpotIdx = 0;
     }
-    if (!blockedSpot) {
-      for (let colIdx = 0; colIdx < 4; colIdx += 1) {
-        for (let rowIdx = 0; rowIdx < 4; rowIdx += 1) {
-          if (grid[rowIdx][colIdx] > 0) {
-            currNumTiles += 1;
-          } else {
-            if (rowIdx > currNumTiles) {
-              // more than 1 open tile
-              break;
-            }
-            openSpotIdx = rowIdx;
+    if (preventedBadSpawn) {
+      return;
+    }
+    // building highest piece vertically
+    for (let colIdx = 0; colIdx < 4; colIdx += 1) {
+      for (let rowIdx = 0; rowIdx < 4; rowIdx += 1) {
+        if (grid[rowIdx][colIdx] > 0) {
+          currNumTiles += 1;
+        } else {
+          if (rowIdx > currNumTiles) {
+            // more than 1 open tile
+            break;
           }
+          openSpotIdx = rowIdx;
         }
-        if (currNumTiles === 3
+      }
+      if (currNumTiles === 3
           && ((openSpotIdx > 0 && grid[openSpotIdx - 1][colIdx] > 2)
           || (openSpotIdx < 3 && grid[openSpotIdx + 1][colIdx] > 2))) {
-          // forbidden spot
-          grid[openSpotIdx][colIdx] = -1;
-          break;
-        }
-        currNumTiles = 0;
-        openSpotIdx = 0;
+        // forbidden spot
+        grid[openSpotIdx][colIdx] = -1;
+        break;
       }
+      currNumTiles = 0;
+      openSpotIdx = 0;
     }
   }
   // can only smart spawn if we have more than one option
