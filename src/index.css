@@ -19,7 +19,7 @@
 
 @media screen and (max-width: 523px) {
   :root {
-    --tile-size: calc(22vw);
+    --tile-size: calc(21.6vw);
     --grid-gap: calc(var(--tile-size) / 8);
   }
 }
