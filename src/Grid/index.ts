@@ -15,7 +15,7 @@ export default function validBoard(tilesArr: TileMeta[]) {
     { value: 0, zIndex: 0 },
     { value: 0, zIndex: 0 },
     { value: 0, zIndex: 0 },
-    { value: 0, zIndex: 0 },
+    { value: 0, zIndex: 0 }
   ];
   for (let m = 0; m < 4; m += 1) {
     grid.push([...gridRow]);
@@ -42,10 +42,10 @@ export default function validBoard(tilesArr: TileMeta[]) {
         return true;
       }
       if (
-        (m > 0 && currTileVal === grid[m - 1][n].value)
-        || (m < 3 && currTileVal === grid[m + 1][n].value)
-        || (n > 0 && currTileVal === grid[m][n - 1].value)
-        || (n < 3 && currTileVal === grid[m][n + 1].value)
+        (m > 0 && currTileVal === grid[m - 1][n].value) ||
+        (m < 3 && currTileVal === grid[m + 1][n].value) ||
+        (n > 0 && currTileVal === grid[m][n - 1].value) ||
+        (n < 3 && currTileVal === grid[m][n + 1].value)
       ) {
         return true;
       }
