@@ -5,7 +5,8 @@
     },
     "extends": [
         "plugin:react/recommended",
-        "airbnb"
+        "airbnb",
+        "prettier"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -18,7 +19,8 @@
         "react",
         "@typescript-eslint",
         "react-hooks",
-        "import"
+        "import",
+        "prettier"
     ],
     "rules": {
         "no-use-before-define": "off",
@@ -32,10 +34,10 @@
                 "tsx": "never"
             }
         ],
-        "max-len": ["warn", { "code": 80 }],
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn",
-        "import/no-unresolved": 0
+        "prettier/prettier": 2,
+        "no-console": 1
     },
     "settings": {
         "import/parsers": {

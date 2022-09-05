@@ -1,8 +1,6 @@
-import React, {
-  useState, Fragment, useRef,
-} from 'react';
+import React, { useState, Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import useDirection from './hooks/useMovement';
+import useMovement from './hooks/useMovement';
 import useLocalStorage from './hooks/useLocalStorage';
 import {
   TileMeta,
@@ -12,7 +10,7 @@ import {
   initialTilesRandom,
   getTransition,
   colorMapper,
-  removeMarkedTiles,
+  removeMarkedTiles
 } from './Tile';
 import validBoard from './Grid';
 import { flatIdx, matrixIndices } from './utils/coordinateUtils';
@@ -29,7 +27,7 @@ function App() {
   const [friendlySpawning, setFriendlySpawning] = useState(true);
 
   type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
-  function slideHandler(dir : Direction) {
+  function slideHandler(dir: Direction) {
     let validMove = false;
     const newTilesArr = removeMarkedTiles(tilesArr);
     // mapping of flat index to position in tilesArr
@@ -45,9 +43,10 @@ function App() {
       nextSpotIdx: number;
     }
 
-    function moveTile({
-      i, j, currTileArrIdx, nextSpotIdx,
-    }: MoveTileProps, inputDir: Direction):number {
+    function moveTile(
+      { i, j, currTileArrIdx, nextSpotIdx }: MoveTileProps,
+      inputDir: Direction
+    ): number {
       const currFlatIdx = newTilesArr[currTileArrIdx].idx;
       const reverseIteration = !!(inputDir === 'DOWN' || inputDir === 'RIGHT');
       const horizontalMove = !!(inputDir === 'LEFT' || inputDir === 'RIGHT');
@@ -66,42 +65,44 @@ function App() {
         mergeTransition = () => getTransition(i, nextSpotIdx + 1);
       }
 
-      const moveFlatIdx = () => (horizontalMove
-        ? flatIdx(i, nextSpotIdx)
-        : flatIdx(nextSpotIdx, j));
-      const moveTransition = () => (horizontalMove
-        ? getTransition(i, nextSpotIdx)
-        : getTransition(nextSpotIdx, j));
+      const moveFlatIdx = () =>
+        horizontalMove ? flatIdx(i, nextSpotIdx) : flatIdx(nextSpotIdx, j);
+      const moveTransition = () =>
+        horizontalMove
+          ? getTransition(i, nextSpotIdx)
+          : getTransition(nextSpotIdx, j);
 
       let currTile = newTilesArr[currTileArrIdx];
       const mergeTileIdx = flatToArrPosMap.get(mergeFlatIdx());
-      let mergeTile = (mergeTileIdx !== undefined) && newTilesArr[mergeTileIdx];
+      let mergeTile = mergeTileIdx !== undefined && newTilesArr[mergeTileIdx];
 
       if (
-        ((!reverseIteration && nextSpotIdx > 0)
-        || (reverseIteration && nextSpotIdx < 3))
-        && mergeTileIdx !== undefined && mergeTile
-        && mergeTile.value === currTile.value) {
+        ((!reverseIteration && nextSpotIdx > 0) ||
+          (reverseIteration && nextSpotIdx < 3)) &&
+        mergeTileIdx !== undefined &&
+        mergeTile &&
+        mergeTile.value === currTile.value
+      ) {
         // merge
         validMove = true;
         mergeTile = {
           ...mergeTile,
           shouldDelete: true,
-          zIndex: 10,
+          zIndex: 10
         };
         currTile = {
           ...currTile,
           zIndex: 20,
           shouldDelete: true,
           idx: mergeFlatIdx(),
-          transition: mergeTransition(),
+          transition: mergeTransition()
         };
         const newTile = Tile({
           i: matrixIndices(mergeTile.idx).i,
           j: matrixIndices(mergeTile.idx).j,
           value: mergeTile.value * 2,
           state: 'MERGE',
-          transition: mergeTransition(),
+          transition: mergeTransition()
         });
         newTilesArr[mergeTileIdx] = mergeTile;
         newTilesArr[currTileArrIdx] = currTile;
@@ -115,14 +116,17 @@ function App() {
           setBestScore(currTotalScore);
         }
         return nextSpotIdx;
-      } if ((horizontalMove && (j !== nextSpotIdx))
-      || (!horizontalMove && (i !== nextSpotIdx))) {
+      }
+      if (
+        (horizontalMove && j !== nextSpotIdx) ||
+        (!horizontalMove && i !== nextSpotIdx)
+      ) {
         validMove = true;
         flatToArrPosMap.set(moveFlatIdx(), currTileArrIdx);
         currTile = {
           ...currTile,
           idx: moveFlatIdx(),
-          transition: moveTransition(),
+          transition: moveTransition()
         };
         newTilesArr[currTileArrIdx] = currTile;
         flatToArrPosMap.delete(currFlatIdx);
@@ -138,9 +142,15 @@ function App() {
         for (let i = 0; i < 4; i += 1) {
           currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
           if (currTileArrIdx !== undefined) {
-            nextSpotIdx = moveTile({
-              i, j, currTileArrIdx, nextSpotIdx,
-            }, 'UP');
+            nextSpotIdx = moveTile(
+              {
+                i,
+                j,
+                currTileArrIdx,
+                nextSpotIdx
+              },
+              'UP'
+            );
           }
         }
       }
@@ -150,9 +160,15 @@ function App() {
         for (let i = 3; i >= 0; i -= 1) {
           currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
           if (currTileArrIdx !== undefined) {
-            nextSpotIdx = moveTile({
-              i, j, currTileArrIdx, nextSpotIdx,
-            }, 'DOWN');
+            nextSpotIdx = moveTile(
+              {
+                i,
+                j,
+                currTileArrIdx,
+                nextSpotIdx
+              },
+              'DOWN'
+            );
           }
         }
       }
@@ -162,9 +178,15 @@ function App() {
         for (let j = 0; j < 4; j += 1) {
           currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
           if (currTileArrIdx !== undefined) {
-            nextSpotIdx = moveTile({
-              i, j, currTileArrIdx, nextSpotIdx,
-            }, 'LEFT');
+            nextSpotIdx = moveTile(
+              {
+                i,
+                j,
+                currTileArrIdx,
+                nextSpotIdx
+              },
+              'LEFT'
+            );
           }
         }
       }
@@ -174,9 +196,15 @@ function App() {
         for (let j = 3; j >= 0; j -= 1) {
           currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
           if (currTileArrIdx !== undefined) {
-            nextSpotIdx = moveTile({
-              i, j, currTileArrIdx, nextSpotIdx,
-            }, 'RIGHT');
+            nextSpotIdx = moveTile(
+              {
+                i,
+                j,
+                currTileArrIdx,
+                nextSpotIdx
+              },
+              'RIGHT'
+            );
           }
         }
       }
@@ -191,14 +219,16 @@ function App() {
       spawnTileRandom({ tilesArr: newTilesArr });
     }
     setTilesArr(newTilesArr);
-    if (!validBoard(newTilesArr)) { setGameOver(true); }
+    if (!validBoard(newTilesArr)) {
+      setGameOver(true);
+    }
   }
 
-  const swipeRef = useDirection({
+  const swipeRef = useMovement({
     onMoveUp: () => slideHandler('UP'),
     onMoveDown: () => slideHandler('DOWN'),
     onMoveLeft: () => slideHandler('LEFT'),
-    onMoveRight: () => slideHandler('RIGHT'),
+    onMoveRight: () => slideHandler('RIGHT')
   });
 
   return (
@@ -210,7 +240,8 @@ function App() {
           initialFocus={restartButtonRef}
           onClose={setGameOver}
         >
-          <div className={`flex items-end justify-center 
+          <div
+            className={`flex items-end justify-center 
            text-center sm:block sm:p-0`}
           >
             <Transition.Child
@@ -254,10 +285,10 @@ function App() {
                 className={`inline-block rounded-lg 
                 overflow-hidden transform transition-all 
                 -my-16 sm:my-0 text-center`}
-
               >
                 <div className="flex flex-col mt-64">
-                  <div className="text-7xl sm:text-8xl mb-10 sm:mb-32
+                  <div
+                    className="text-7xl sm:text-8xl mb-10 sm:mb-32
                   font-bold text-stone-600 opacity-100"
                   >
                     Game Over!
@@ -270,7 +301,6 @@ function App() {
                   />
                 </div>
               </div>
-
             </Transition.Child>
           </div>
         </Dialog>
@@ -317,20 +347,16 @@ function App() {
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...swipeRef}
         >
-          {
-          tilesArr.map(({
-            key,
-            value,
-            zIndex,
-            transition,
-            animation,
-          }) => (
+          {tilesArr.map(({ key, value, zIndex, transition, animation }) => (
             <div
               key={key}
-              className={'tile absolute rounded-3px duration-100 transform '
-              + `${transition}`}
+              className={
+                'tile absolute rounded-3px duration-100 transform ' +
+                `${transition}`
+              }
             >
-              <div className={`tile flex justify-center 
+              <div
+                className={`tile flex justify-center 
                 items-center rounded-3px font-bold
                 tile-${value}
                 ${colorMapper(value)} z-${zIndex} ${animation}`}
@@ -338,18 +364,11 @@ function App() {
                 {value}
               </div>
             </div>
-          ))
-        }
+          ))}
         </div>
-        <div
-          className="grid-center"
-          style={{ backgroundColor: '#bbada0' }}
-        >
+        <div className="grid-center" style={{ backgroundColor: '#bbada0' }}>
           {[0, 1, 2, 3].map((rowIdx) => (
-            <div
-              className="flex justify-center grid-col"
-              key={rowIdx}
-            >
+            <div className="flex justify-center grid-col" key={rowIdx}>
               {[0, 1, 2, 3].map((colIdx) => (
                 <div
                   className="tile rounded-3px grid-row"
@@ -361,18 +380,17 @@ function App() {
           ))}
         </div>
       </div>
-      <footer className="mx-auto text-sm sm:text-md text-stone-700
+      <footer
+        className="mx-auto text-sm sm:text-md text-stone-700
         px-4 sm:px-0"
       >
-        2048 clone built with React Hooks, TypeScript, and Tailwind CSS.
-        Created by Nathen Smith. Source code can be found
-        {' '}
+        2048 clone built with React Hooks, TypeScript, and Tailwind CSS. Created
+        by Nathen Smith. Source code can be found{' '}
         <a
           href="https://github.com/Nathen-Smith/2048"
           className="underline font-semibold"
         >
           here
-
         </a>
         .
       </footer>

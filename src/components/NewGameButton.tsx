@@ -3,15 +3,18 @@ import React from 'react';
 import { initialTilesRandom, TileMeta } from '../Tile';
 
 interface NewGameButtonProps {
-  setGameOver: React.Dispatch<React.SetStateAction<boolean>>
-  setTilesArr: React.Dispatch<React.SetStateAction<TileMeta[]>>
-  setScore: React.Dispatch<React.SetStateAction<number>>
+  setGameOver: React.Dispatch<React.SetStateAction<boolean>>;
+  setTilesArr: React.Dispatch<React.SetStateAction<TileMeta[]>>;
+  setScore: React.Dispatch<React.SetStateAction<number>>;
   restartButtonRef?: React.MutableRefObject<null>;
 }
 
 function NewGameButton({
-  setGameOver, setTilesArr, setScore, restartButtonRef,
-}:NewGameButtonProps) {
+  setGameOver,
+  setTilesArr,
+  setScore,
+  restartButtonRef
+}: NewGameButtonProps) {
   return (
     <div>
       <button
