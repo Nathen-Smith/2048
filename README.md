@@ -15,12 +15,16 @@ https://github.com/Nathen-Smith/2048/blob/ad8ffbf703f93100e5e45575cfc789aa6fbb51
 
 Here are the descriptions of each property
 
-| Property    | Description |
-| ----------- | ----------- |
-| idx         | The current flat index of the tile       |
-| key         | The unique key for this tile, necessary so React can update this tile accordingly        |
-| value       | The power of 2 number of this tile       |
-| shouldDelete         | Marking for deletion of a tile (when merging)       |
-| zIndex         | CSS z-index value for this tile (merging)       |
-| transition         | CSS transition, which places the tile in its correct spot       |
-| animation         | CSS animation, could be a new tile or a merged tile      |
+| Property     | Description |
+| ------------ | ----------- |
+| idx          | The current flat index of the tile |
+| key          | The unique key for this tile, necessary so React can update this tile accordingly |
+| value        | The power of 2 number of this tile |
+| shouldDelete | Marking for deletion of a tile (when merging) |
+| zIndex       | CSS z-index value for this tile (merging) |
+| transition   | CSS transition, which places the tile in its correct spot |
+| animation    | CSS animation, could be a new tile or a merged tile |
+
+There is also the 
+
+https://github.com/Nathen-Smith/2048/blob/ad8ffbf703f93100e5e45575cfc789aa6fbb51b3/src/Tile/tile.ts#L27-L34
