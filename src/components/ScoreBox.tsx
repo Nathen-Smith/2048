@@ -17,9 +17,7 @@ function ScoreBox({ label, score }: ScoreBoxProps) {
       >
         {label}
       </div>
-      <div className="text-white font-bold">
-        {score}
-      </div>
+      <div className="text-white font-bold">{score}</div>
     </div>
   );
 }
