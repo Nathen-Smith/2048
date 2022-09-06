@@ -25,6 +25,6 @@ Here are the descriptions of each property
 | transition   | CSS transition, which places the tile in its correct spot |
 | animation    | CSS animation, could be a new tile or a merged tile |
 
-There is also the 
+To create a new tile object, we pass in the following values, which map these more abstract terms to their technical counterparts. For example, a tile with the state of `NEW` gets an animation. A tile which was just merged gets a higher `z-index` so it moves over the tiles that built up this tile.
 
 https://github.com/Nathen-Smith/2048/blob/ad8ffbf703f93100e5e45575cfc789aa6fbb51b3/src/Tile/tile.ts#L27-L34
