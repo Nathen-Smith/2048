@@ -36,3 +36,13 @@ This is what happens whenever the user moves the tiles (WASD, arrow keys, swipe)
   - take tiles from the top and move them first, then tiles below get moved: the ordering is row 0 to row 3. The ordering of the column iteration does not matter here.
   - Maintain a `nextSpot` for every column, which starts at 0. Whenever we encounter a tile in our iteration, we update the `nextSpot` as well as move or merge tiles
 3. `nextSpot` can be thought of as an empty position within the grid. When handling the moving for each tile, we need to check if we can merge this tile. If we can merge, the tile gets assigned the styles to transition over and `nextSpot` is unchanged since it still is an empty position. When we can only move the tile, then we increment/decrement `nextSpot` as according to the iteration direction.
+
+## Friendly Spawning
+
+Firstly, there are some terms that need to be defined. It also helps to know the optimal strategy for 2048: building in a corner. The highest tile should be in a corner, then in that row or column that contains that piece, are tiles that increment up to the highest tile e.g. a row at the top of `512 | 256 | 128 | 64`. Consider the example of building to the top left corner for the definitions below:
+- "Forbidden move": The one move you should never do. For the example of building to top left corner, this would be moving tiles down. This is forbidden because it is almost certain there are pieces below the row, or will spawn above, thus ruining the row of increasing tiles.
+- "Sub-optimal move": This would be moving right. If we had a top row of `512 | 256 | 128 | X` and we move right, we risk a tile spawning in the top left corner, which is extremely hard to get rid of and essentially would take up space.
+
+At a high level, the algorithm for friendly spawning (rather, preventing bad spawning) is as follows.
+
+We parse the grid row-wise, then column-wise (ordering does not matter). If there are exactly 3 tiles in this row or column, and the number next to the open spot is greater than 2, we prevent spawning a tile in this open spot. This way, a newly spawned tile cannot mess up the sub-optimal move. Similarly, a forbidden move cannot occur as a row or column will only be filled if we can merge.
