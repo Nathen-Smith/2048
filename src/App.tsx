@@ -36,6 +36,9 @@ function App() {
       flatToArrPosMap.set(idx, arrIdx);
     });
 
+    const reverseIteration = !!(dir === 'DOWN' || dir === 'RIGHT');
+    const horizontalMove = !!(dir === 'LEFT' || dir === 'RIGHT');
+
     interface MoveTileProps {
       i: number;
       j: number;
@@ -43,24 +46,24 @@ function App() {
       nextSpotIdx: number;
     }
 
-    function moveTile(
-      { i, j, currTileArrIdx, nextSpotIdx }: MoveTileProps,
-      inputDir: Direction
-    ): number {
+    function moveTile({
+      i,
+      j,
+      currTileArrIdx,
+      nextSpotIdx
+    }: MoveTileProps): number {
       const currFlatIdx = newTilesArr[currTileArrIdx].idx;
-      const reverseIteration = !!(inputDir === 'DOWN' || inputDir === 'RIGHT');
-      const horizontalMove = !!(inputDir === 'LEFT' || inputDir === 'RIGHT');
 
       // default up
       let mergeFlatIdx = () => flatIdx(nextSpotIdx - 1, j);
       let mergeTransition = () => getTransition(nextSpotIdx - 1, j);
-      if (inputDir === 'DOWN') {
+      if (dir === 'DOWN') {
         mergeFlatIdx = () => flatIdx(nextSpotIdx + 1, j);
         mergeTransition = () => getTransition(nextSpotIdx + 1, j);
-      } else if (inputDir === 'LEFT') {
+      } else if (dir === 'LEFT') {
         mergeFlatIdx = () => flatIdx(i, nextSpotIdx - 1);
         mergeTransition = () => getTransition(i, nextSpotIdx - 1);
-      } else if (inputDir === 'RIGHT') {
+      } else if (dir === 'RIGHT') {
         mergeFlatIdx = () => flatIdx(i, nextSpotIdx + 1);
         mergeTransition = () => getTransition(i, nextSpotIdx + 1);
       }
@@ -142,33 +145,27 @@ function App() {
         for (let i = 0; i < 4; i += 1) {
           currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
           if (currTileArrIdx !== undefined) {
-            nextSpotIdx = moveTile(
-              {
-                i,
-                j,
-                currTileArrIdx,
-                nextSpotIdx
-              },
-              'UP'
-            );
+            nextSpotIdx = moveTile({
+              i,
+              j,
+              currTileArrIdx,
+              nextSpotIdx
+            });
           }
         }
       }
     } else if (dir === 'DOWN') {
-      for (let j = 3; j >= 0; j -= 1) {
+      for (let j = 0; j < 4; j += 1) {
         let nextSpotIdx = 3;
         for (let i = 3; i >= 0; i -= 1) {
           currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
           if (currTileArrIdx !== undefined) {
-            nextSpotIdx = moveTile(
-              {
-                i,
-                j,
-                currTileArrIdx,
-                nextSpotIdx
-              },
-              'DOWN'
-            );
+            nextSpotIdx = moveTile({
+              i,
+              j,
+              currTileArrIdx,
+              nextSpotIdx
+            });
           }
         }
       }
@@ -178,33 +175,27 @@ function App() {
         for (let j = 0; j < 4; j += 1) {
           currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
           if (currTileArrIdx !== undefined) {
-            nextSpotIdx = moveTile(
-              {
-                i,
-                j,
-                currTileArrIdx,
-                nextSpotIdx
-              },
-              'LEFT'
-            );
+            nextSpotIdx = moveTile({
+              i,
+              j,
+              currTileArrIdx,
+              nextSpotIdx
+            });
           }
         }
       }
     } else if (dir === 'RIGHT') {
-      for (let i = 3; i >= 0; i -= 1) {
+      for (let i = 0; i < 4; i += 1) {
         let nextSpotIdx = 3;
         for (let j = 3; j >= 0; j -= 1) {
           currTileArrIdx = flatToArrPosMap.get(flatIdx(i, j));
           if (currTileArrIdx !== undefined) {
-            nextSpotIdx = moveTile(
-              {
-                i,
-                j,
-                currTileArrIdx,
-                nextSpotIdx
-              },
-              'RIGHT'
-            );
+            nextSpotIdx = moveTile({
+              i,
+              j,
+              currTileArrIdx,
+              nextSpotIdx
+            });
           }
         }
       }
