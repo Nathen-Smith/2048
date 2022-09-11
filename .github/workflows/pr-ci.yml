@@ -27,4 +27,6 @@ jobs:
     - name: Install project dependencies
       run: yarn --prefer-offline
     - run: yarn run build
+  test:
+    needs: build
     - run: yarn run test

@@ -4,7 +4,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-20.04
 
     steps:
@@ -27,8 +27,15 @@ jobs:
     - name: Install project dependencies
       run: yarn --prefer-offline
     - run: yarn run build
+
+  test:
+    needs: build
+    steps:
     - run: yarn run test
 
+  deploy:
+    needs: test
+    steps:
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@4.1.7
       with:
