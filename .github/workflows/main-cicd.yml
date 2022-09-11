@@ -13,6 +13,7 @@ jobs:
       with:
         node-version: '14'
         cache: 'yarn'
+        cache-dependency-path: './2048/yarn.lock'
 
     - name: Install project dependencies
       run: yarn --prefer-offline
