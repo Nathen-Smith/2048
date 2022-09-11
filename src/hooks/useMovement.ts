@@ -30,7 +30,7 @@ function useMovement({
     },
   });
 
-  onkeydown = ({ key }) => {
+  document.onkeydown = ({ key }) => {
     switch (key) {
       case 'ArrowUp':
       case 'w':

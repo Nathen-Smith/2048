@@ -18,7 +18,8 @@
         "react",
         "@typescript-eslint",
         "react-hooks",
-        "import"
+        "import",
+        "testing-library"
     ],
     "rules": {
         "no-use-before-define": "off",
@@ -35,7 +36,11 @@
         "max-len": ["warn", { "code": 80 }],
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn",
-        "import/no-unresolved": 0
+        "import/no-unresolved": 0,
+        "testing-library/await-async-query": "error",
+		"testing-library/no-await-sync-query": "error",
+		"testing-library/no-debugging-utils": "warn",
+		"testing-library/no-dom-import": "off"
     },
     "settings": {
         "import/parsers": {

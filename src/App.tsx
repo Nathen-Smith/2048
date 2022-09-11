@@ -20,8 +20,15 @@ import ScoreBox from './components/ScoreBox';
 import NewGameButton from './components/NewGameButton';
 import MyToggle from './components/MyToggle';
 
-function App() {
-  const [tilesArr, setTilesArr] = useState<TileMeta[]>(initialTilesRandom());
+interface Props {
+  // eslint-disable-next-line react/require-default-props
+  initialTiles?: TileMeta[]
+}
+
+function App({ initialTiles }:Props) {
+  const [tilesArr, setTilesArr] = useState<TileMeta[]>(
+    initialTiles || initialTilesRandom(),
+  );
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useLocalStorage('bestScore', 0);
@@ -321,6 +328,7 @@ function App() {
           tilesArr.map(({
             key,
             value,
+            shouldDelete,
             zIndex,
             transition,
             animation,
@@ -329,6 +337,7 @@ function App() {
               key={key}
               className={'tile absolute rounded-3px duration-100 transform '
               + `${transition}`}
+              data-testid={shouldDelete ? 'tile-delete' : 'tile'}
             >
               <div className={`tile flex justify-center 
                 items-center rounded-3px font-bold
