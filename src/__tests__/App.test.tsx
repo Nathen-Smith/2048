@@ -18,13 +18,13 @@ test('No spawn on invalid move, merges correctly', () => {
     {
       i: 0,
       j: 0,
-      value: 2,
+      value: 2
     },
     {
       i: 0,
       j: 3,
-      value: 2,
-    },
+      value: 2
+    }
   ]);
   render(<App initialTiles={initialTiles} />);
   fireEvent.keyDown(document.body, { key: 'w' });

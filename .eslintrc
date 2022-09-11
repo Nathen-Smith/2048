@@ -39,9 +39,9 @@
         "react-hooks/exhaustive-deps": "warn",
         "import/no-unresolved": 0,
         "testing-library/await-async-query": "error",
-		"testing-library/no-await-sync-query": "error",
-		"testing-library/no-debugging-utils": "warn",
-		"testing-library/no-dom-import": "off",
+        "testing-library/no-await-sync-query": "error",
+        "testing-library/no-debugging-utils": "warn",
+        "testing-library/no-dom-import": "off",
         "prettier/prettier": 2,
         "no-console": 1
     },
