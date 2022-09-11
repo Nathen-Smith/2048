@@ -8,13 +8,21 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
+    - uses: actions/checkout@v2
+    - name: Setup Node
+      uses: actions/setup-node@v2
       with:
-        node-version: '14'
-        cache: 'yarn'
-        cache-dependency-path: './2048/yarn.lock'
-
+        node-version: "14"
+    - name: Get yarn cache
+      id: yarn-cache
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.yarn-cache.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
 
     - name: Install project dependencies
       run: yarn --prefer-offline
