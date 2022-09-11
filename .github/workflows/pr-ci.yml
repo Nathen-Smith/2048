@@ -28,5 +28,6 @@ jobs:
       run: yarn --prefer-offline
     - run: yarn run build
   test:
+    runs-on: ubuntu-20.04
     needs: build
     - run: yarn run test
