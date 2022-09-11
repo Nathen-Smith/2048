@@ -30,4 +30,5 @@ jobs:
   test:
     runs-on: ubuntu-20.04
     needs: build
+    steps:
     - run: yarn run test
