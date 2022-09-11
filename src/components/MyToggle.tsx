@@ -22,6 +22,7 @@ function MyToggle({ enabled, setEnabled }: MyToggleProps) {
             border-transparent transition-colors duration-200 ease-in-out 
             focus:outline-none focus-visible:ring-2 focus-visible:ring-white 
             focus-visible:ring-opacity-75`}
+          data-testid="my-toggle"
         >
           <span
             className={`${
