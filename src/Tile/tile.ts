@@ -24,7 +24,7 @@ function newKeyId() {
   return keyId;
 }
 
-interface NewTileProps {
+export interface NewTileProps {
   i: number;
   j: number;
   value: number;

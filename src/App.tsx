@@ -18,8 +18,15 @@ import ScoreBox from './components/ScoreBox';
 import NewGameButton from './components/NewGameButton';
 import MyToggle from './components/MyToggle';
 
-function App() {
-  const [tilesArr, setTilesArr] = useState<TileMeta[]>(initialTilesRandom());
+interface Props {
+  // eslint-disable-next-line react/require-default-props
+  initialTiles?: TileMeta[];
+}
+
+function App({ initialTiles }: Props) {
+  const [tilesArr, setTilesArr] = useState<TileMeta[]>(
+    initialTiles || initialTilesRandom()
+  );
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useLocalStorage('bestScore', 0);
@@ -338,24 +345,27 @@ function App() {
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...swipeRef}
         >
-          {tilesArr.map(({ key, value, zIndex, transition, animation }) => (
-            <div
-              key={key}
-              className={
-                'tile absolute rounded-3px duration-100 transform ' +
-                `${transition}`
-              }
-            >
+          {tilesArr.map(
+            ({ key, value, shouldDelete, zIndex, transition, animation }) => (
               <div
-                className={`tile flex justify-center 
+                key={key}
+                className={
+                  'tile absolute rounded-3px duration-100 transform ' +
+                  `${transition}`
+                }
+                data-testid={shouldDelete ? 'tile-delete' : 'tile'}
+              >
+                <div
+                  className={`tile flex justify-center 
                 items-center rounded-3px font-bold
                 tile-${value}
                 ${colorMapper(value)} z-${zIndex} ${animation}`}
-              >
-                {value}
+                >
+                  {value}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          )}
         </div>
         <div className="grid-center" style={{ backgroundColor: '#bbada0' }}>
           {[0, 1, 2, 3].map((rowIdx) => (
