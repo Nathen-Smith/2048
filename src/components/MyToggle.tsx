@@ -5,7 +5,7 @@ interface MyToggleProps {
   enabled: boolean;
   setEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
-function MyToggle({ enabled, setEnabled }:MyToggleProps) {
+function MyToggle({ enabled, setEnabled }: MyToggleProps) {
   return (
     <Switch.Group>
       <div className="flex items-center">

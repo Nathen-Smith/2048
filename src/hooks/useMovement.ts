@@ -12,7 +12,7 @@ function useMovement({
   onMoveUp,
   onMoveDown,
   onMoveLeft,
-  onMoveRight,
+  onMoveRight
 }: MoveCallbackProps) {
   const swipeRef = useSwipeable({
     preventScrollOnSwipe: true,
@@ -27,7 +27,7 @@ function useMovement({
     },
     onSwipedRight: () => {
       onMoveRight && onMoveRight();
-    },
+    }
   });
 
   document.onkeydown = ({ key }) => {

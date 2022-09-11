@@ -11,11 +11,11 @@ export interface TileMeta {
   animation: string;
 }
 
-export type TileState = 'NEW' | 'MERGE' | 'NONE'
+export type TileState = 'NEW' | 'MERGE' | 'NONE';
 export const animationMap = {
   NEW: 'tile-new',
   MERGE: 'tile-merged',
-  NONE: '',
+  NONE: ''
 };
 
 let keyId = 0;
@@ -33,7 +33,12 @@ export interface NewTileProps {
   transition?: string;
 }
 export function Tile({
-  i, j, value, state, key, transition,
+  i,
+  j,
+  value,
+  state,
+  key,
+  transition
 }: NewTileProps): TileMeta {
   const animationKey = state || 'NONE';
   const newKey = key || newKeyId();
@@ -45,16 +50,14 @@ export function Tile({
     shouldDelete: false,
     zIndex: animationKey === 'MERGE' ? 30 : 10,
     transition: newTransition,
-    animation: animationMap[animationKey],
+    animation: animationMap[animationKey]
   };
 }
 
 interface SpawnTileRandomProps {
   tilesArr: TileMeta[];
 }
-export function spawnTileRandom({
-  tilesArr,
-} : SpawnTileRandomProps) {
+export function spawnTileRandom({ tilesArr }: SpawnTileRandomProps) {
   const tileIndices = new Set(tilesArr.map((tile) => tile.idx));
   const openIndices: number[] = [];
   for (let i = 0; i < 16; i += 1) {
@@ -62,31 +65,32 @@ export function spawnTileRandom({
       openIndices.push(i);
     }
   }
-  const newTileIdx = openIndices[Math.floor(openIndices.length
-     * Math.random())];
+  const newTileIdx =
+    openIndices[Math.floor(openIndices.length * Math.random())];
   const { i, j } = matrixIndices(newTileIdx);
   const newTile = Tile({
-    i, j, value: 2, state: 'NEW',
+    i,
+    j,
+    value: 2,
+    state: 'NEW'
   });
   tilesArr.push(newTile);
 }
 
 /* friendlySpawnTile
-  *  DESCRIPTION: Constructs a matrix out of the game state tilesArr, then runs
-  *  preventBadSpawn if we have multiple empty tiles (options). Finally, we
-  *  spawn a tile following the same random algorithm in spawnTileRandom
-  *  INPUTS:
-  *    tilesArr: tileMeta[]
-  *  OUTPUTS: None
-  *  SIDE EFFECTS: adds a new tile to tilesArr
-  */
-export function friendlySpawnTile({
-  tilesArr,
-} : SpawnTileRandomProps) {
+ *  DESCRIPTION: Constructs a matrix out of the game state tilesArr, then runs
+ *  preventBadSpawn if we have multiple empty tiles (options). Finally, we
+ *  spawn a tile following the same random algorithm in spawnTileRandom
+ *  INPUTS:
+ *    tilesArr: tileMeta[]
+ *  OUTPUTS: None
+ *  SIDE EFFECTS: adds a new tile to tilesArr
+ */
+export function friendlySpawnTile({ tilesArr }: SpawnTileRandomProps) {
   // tilesArr can have merging tiles and hidden ones
   let i;
   let j;
-  const grid : number[][] = [];
+  const grid: number[][] = [];
   const gridRow = [0, 0, 0, 0];
   for (let idx = 0; idx < 4; idx += 1) {
     grid.push([...gridRow]);
@@ -102,17 +106,17 @@ export function friendlySpawnTile({
     }
   }
   /* preventBadSpawn
-  *  DESCRIPTION: Parses grid firstly row-wise, then column-wise. If there are
-  *  exactly 3 tiles in this row or column, and the number next to the open
-  *  spot is greater than 2, we prevent spawning a tile in this open spot.
-  *  This way, a newly spawned tile cannot mess up the sub-optimal move.
-  *  Similarly, a forbidden move cannot occur as a row or column will only
-  *  be filled if we can merge.
-  *  INPUTS:
-  *    grid: number[][]
-  *  OUTPUTS: None
-  *  SIDE EFFECTS: Could place a -1 in grid
-  */
+   *  DESCRIPTION: Parses grid firstly row-wise, then column-wise. If there are
+   *  exactly 3 tiles in this row or column, and the number next to the open
+   *  spot is greater than 2, we prevent spawning a tile in this open spot.
+   *  This way, a newly spawned tile cannot mess up the sub-optimal move.
+   *  Similarly, a forbidden move cannot occur as a row or column will only
+   *  be filled if we can merge.
+   *  INPUTS:
+   *    grid: number[][]
+   *  OUTPUTS: None
+   *  SIDE EFFECTS: Could place a -1 in grid
+   */
   function preventBadSpawn() {
     let currNumTiles = 0;
     let openSpotIdx = 0;
@@ -130,9 +134,11 @@ export function friendlySpawnTile({
           openSpotIdx = colIdx;
         }
       }
-      if (currNumTiles === 3
-        && ((openSpotIdx > 0 && grid[rowIdx][openSpotIdx - 1] > 2)
-        || (openSpotIdx < 3 && grid[rowIdx][openSpotIdx + 1] > 2))) {
+      if (
+        currNumTiles === 3 &&
+        ((openSpotIdx > 0 && grid[rowIdx][openSpotIdx - 1] > 2) ||
+          (openSpotIdx < 3 && grid[rowIdx][openSpotIdx + 1] > 2))
+      ) {
         // forbidden spot
         preventedBadSpawn = true;
         grid[rowIdx][openSpotIdx] = -1;
@@ -157,9 +163,11 @@ export function friendlySpawnTile({
           openSpotIdx = rowIdx;
         }
       }
-      if (currNumTiles === 3
-          && ((openSpotIdx > 0 && grid[openSpotIdx - 1][colIdx] > 2)
-          || (openSpotIdx < 3 && grid[openSpotIdx + 1][colIdx] > 2))) {
+      if (
+        currNumTiles === 3 &&
+        ((openSpotIdx > 0 && grid[openSpotIdx - 1][colIdx] > 2) ||
+          (openSpotIdx < 3 && grid[openSpotIdx + 1][colIdx] > 2))
+      ) {
         // forbidden spot
         grid[openSpotIdx][colIdx] = -1;
         break;
@@ -181,11 +189,14 @@ export function friendlySpawnTile({
       }
     }
   }
-  const newTileIdx = openIndices[Math.floor(openIndices.length
-     * Math.random())];
+  const newTileIdx =
+    openIndices[Math.floor(openIndices.length * Math.random())];
   ({ i, j } = matrixIndices(newTileIdx));
   const newTile = Tile({
-    i, j, value: 2, state: 'NEW',
+    i,
+    j,
+    value: 2,
+    state: 'NEW'
   });
   tilesArr.push(newTile);
 }
