@@ -1,4 +1,4 @@
-## 2048 Built with React Hooks, TypeScript, Tailwind CSS, Headless UI
+## 2048 Built with React Hooks, TypeScript, Jest, React Testing Library, Tailwind CSS, Headless UI
 The app is hosted on github pages <a href="http://nathensmith.com/2048">here</a>.
 
 Thanks to <a href="https://blog.logrocket.com/using-localstorage-react-hooks/">this</a>
