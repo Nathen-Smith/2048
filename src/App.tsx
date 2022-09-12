@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import React, { useState, Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import useMovement from './hooks/useMovement';
@@ -19,11 +20,11 @@ import NewGameButton from './components/NewGameButton';
 import MyToggle from './components/MyToggle';
 
 interface Props {
-  // eslint-disable-next-line react/require-default-props
   initialTiles?: TileMeta[];
+  noSpawnNewTile?: boolean;
 }
 
-function App({ initialTiles }: Props) {
+function App({ initialTiles, noSpawnNewTile }: Props) {
   const [tilesArr, setTilesArr] = useState<TileMeta[]>(
     initialTiles || initialTilesRandom()
   );
@@ -211,11 +212,14 @@ function App({ initialTiles }: Props) {
       return;
     }
 
-    if (friendlySpawning) {
-      friendlySpawnTile({ tilesArr: newTilesArr });
-    } else {
-      spawnTileRandom({ tilesArr: newTilesArr });
+    if (noSpawnNewTile === undefined || !noSpawnNewTile) {
+      if (friendlySpawning) {
+        friendlySpawnTile({ tilesArr: newTilesArr });
+      } else {
+        spawnTileRandom({ tilesArr: newTilesArr });
+      }
     }
+
     setTilesArr(newTilesArr);
     if (!validBoard(newTilesArr)) {
       setGameOver(true);
