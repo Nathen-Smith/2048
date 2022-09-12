@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import App from '../App';
+import App from './App';
 import { getInitialTilesArr, getTileMap } from './__utils__/helpers';
 import initialTilesFriendlySpawning from './__utils__/constants';
 

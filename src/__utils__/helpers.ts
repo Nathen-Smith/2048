@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 
-import { Tile, NewTileProps } from '../../Tile';
-import { flatIdx } from '../../utils/coordinateUtils';
+import { Tile, NewTileProps } from '../Tile';
+import { flatIdx } from '../utils/coordinateUtils';
 
 export function getInitialTilesArr(newTiles: NewTileProps[]) {
   return newTiles.map((tile) => Tile(tile));
